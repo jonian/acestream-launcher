@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Acestream Launcher
+GenericName=Media player
+Comment=Open Acestream links with VLC Media Player
+Exec=/usr/bin/acestream-launcher %u
+TryExec=/usr/bin/acestream-launcher
+Icon=vlc
+Terminal=false
+Type=Application
+MimeType=x-scheme-handler/acestream;
+X-KDE-Protocols=acestream
+NoDisplay=true
