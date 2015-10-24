@@ -84,6 +84,7 @@ class AcestreamLauncher(object):
             self.notifier.update(self.appname, self.messages['timeout'], self.icon)
             self.notifier.show()
 
+            self.acestream.terminate()
             sys.exit(0)
 
         time.sleep(2)
@@ -116,7 +117,7 @@ class AcestreamLauncher(object):
 
             self.notifier.update(self.appname, self.messages['started'], self.icon)
             self.notifier.show()
-        except (pexpect.TIMEOUT):
+        except (pexpect.TIMEOUT, pexpect.EOF):
             print('Timeout connecting to Acestream...')
             self.notifier.update(self.appname, self.messages['unavailable'], self.icon)
             self.notifier.show()
