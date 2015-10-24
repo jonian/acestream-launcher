@@ -6,6 +6,7 @@ import time
 import psutil
 import pexpect
 import hashlib
+import pynotify
 import argparse
 
 class AcestreamLauncher(object):
@@ -39,6 +40,20 @@ class AcestreamLauncher(object):
 
         self.args = parser.parse_args()
 
+        self.appname = 'Acestream Launcher'
+        self.icon = self.args.player
+        self.messages = {
+            'running': 'Acestream engine running.',
+            'waiting': 'Waiting for channel response...',
+            'started': 'Streaming started. Launching player.',
+            'timeout': 'Timeout connecting to Acestream!',
+            'unavailable': 'Acestream channel unavailable!',
+            'terminated': 'Acestream engine terminated.'
+        }
+
+        pynotify.init(self.appname)
+        self.notifier = pynotify.Notification(self.appname)
+
         self.start_acestream()
         self.start_session()
         self.start_player()
@@ -49,23 +64,29 @@ class AcestreamLauncher(object):
 
         for process in psutil.process_iter():
             if 'acestreamengine' in process.name():
-                return
+                process.terminate()
 
         self.acestream = psutil.Popen(['acestreamengine', '--client-console'])
-        time.sleep(5)
+        self.notifier.update(self.appname, self.messages['running'], self.icon)
+        self.notifier.show()
+
+        time.sleep(2)
 
     def start_session(self):
         """Start acestream telnet session"""
 
         session = pexpect.spawn('telnet ' + self.args.host + ' ' + self.args.port)
-        session.timeout = 10
+        session.timeout = 5
         connection = session.expect([pexpect.TIMEOUT, 'Escape character.+'])
 
         if connection == 0:
             print('Timeout connecting to Acestream...')
+            self.notifier.update(self.appname, self.messages['timeout'], self.icon)
+            self.notifier.show()
+
             sys.exit(0)
 
-        time.sleep(5)
+        time.sleep(2)
 
         try:
             session.sendline('HELLOBG version=3')
@@ -84,12 +105,21 @@ class AcestreamLauncher(object):
 
             session.sendline('LOAD PID ' + pid)
             session.sendline('START PID ' + pid + ' 0')
+
+            self.notifier.update(self.appname, self.messages['waiting'], self.icon)
+            self.notifier.show()
+
             session.expect('http://.* ')
 
             self.session = session
             self.url = session.after.strip()
+
+            self.notifier.update(self.appname, self.messages['started'], self.icon)
+            self.notifier.show()
         except (pexpect.TIMEOUT):
             print('Timeout connecting to Acestream...')
+            self.notifier.update(self.appname, self.messages['unavailable'], self.icon)
+            self.notifier.show()
 
             self.acestream.terminate()
             sys.exit(0)
@@ -114,6 +144,9 @@ class AcestreamLauncher(object):
             self.acestream.terminate()
         except (AttributeError, psutil.NoSuchProcess):
             print('Acestream not running...')
+
+        self.notifier.update(self.appname, self.messages['terminated'], self.icon)
+        self.notifier.show()
 
         sys.exit(0)
 
