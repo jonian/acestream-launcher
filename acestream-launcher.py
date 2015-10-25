@@ -23,19 +23,24 @@ class AcestreamLauncher(object):
             help='The acestream url to play'
         )
         parser.add_argument(
-            '--host',
-            help='The host to use (default: localhost)',
-            default='localhost'
-        )
-        parser.add_argument(
-            '--port',
-            help='The port to use (default: 62062)',
-            default='62062'
-        )
-        parser.add_argument(
             '--player',
             help='The media player to use (default: vlc)',
             default='vlc'
+        )
+        parser.add_argument(
+            '--client',
+            help='The acestream engine client to use (default: console)',
+            default='console'
+        )
+        parser.add_argument(
+            '--download-limit',
+            help='Download limit in Kb/s (default: 1000)',
+            default='1000'
+        )
+        parser.add_argument(
+            '--upload-limit',
+            help='Upload limit in Kb/s (default: 40)',
+            default='40'
         )
 
         self.args = parser.parse_args()
@@ -46,7 +51,7 @@ class AcestreamLauncher(object):
             'running': 'Acestream engine running.',
             'waiting': 'Waiting for channel response...',
             'started': 'Streaming started. Launching player.',
-            'timeout': 'Timeout connecting to Acestream!',
+            'noauth': 'Error authenticating to Acestream!',
             'unavailable': 'Acestream channel unavailable!',
             'terminated': 'Acestream engine terminated.'
         }
@@ -64,52 +69,51 @@ class AcestreamLauncher(object):
 
         for process in psutil.process_iter():
             if 'acestreamengine' in process.name():
-                process.terminate()
+                process.kill()
 
-        self.acestream = psutil.Popen(['acestreamengine', '--client-console'])
+        client = '--client-' + self.args.client
+        download_limit = '--download-limit ' + self.args.download_limit
+        upload_limit = '--upload-limit ' + self.args.upload_limit
+
+        self.acestream = psutil.Popen(['acestreamengine', client, download_limit, upload_limit])
         self.notifier.update(self.appname, self.messages['running'], self.icon)
         self.notifier.show()
 
-        time.sleep(2)
+        time.sleep(5)
 
     def start_session(self):
         """Start acestream telnet session"""
 
-        session = pexpect.spawn('telnet ' + self.args.host + ' ' + self.args.port)
-        session.timeout = 5
-        connection = session.expect([pexpect.TIMEOUT, 'Escape character.+'])
-
-        if connection == 0:
-            print('Timeout connecting to Acestream...')
-            self.notifier.update(self.appname, self.messages['timeout'], self.icon)
-            self.notifier.show()
-
-            self.acestream.terminate()
-            sys.exit(0)
-
-        time.sleep(2)
+        product_key = 'n51LvQoTlJzNGaFxseRK-uvnvX-sD4Vm5Axwmc4UcoD-jruxmKsuJaH0eVgE'
+        session = pexpect.spawn('telnet localhost 62062')
 
         try:
+            session.timeout = 5
             session.sendline('HELLOBG version=3')
             session.expect('key=.* ')
 
-            product_key = 'n51LvQoTlJzNGaFxseRK-uvnvX-sD4Vm5Axwmc4UcoD-jruxmKsuJaH0eVgE'
             request_key = session.after.strip().split('=')[1]
             signature = hashlib.sha1(request_key + product_key).hexdigest()
             response_key = product_key.split('-')[0] + '-' + signature
             pid = self.args.url.split('://')[1]
-            session.timeout = 30
 
             session.sendline('READY key=' + response_key)
             session.expect('AUTH.*')
             session.sendline('USERDATA [{"gender": "1"}, {"age": "3"}]')
 
-            session.sendline('LOAD PID ' + pid)
-            session.sendline('START PID ' + pid + ' 0')
-
             self.notifier.update(self.appname, self.messages['waiting'], self.icon)
             self.notifier.show()
+        except (pexpect.TIMEOUT, pexpect.EOF):
+            print('Error authenticating to Acestream...')
+            self.notifier.update(self.appname, self.messages['noauth'], self.icon)
+            self.notifier.show()
 
+            self.acestream.kill()
+            sys.exit(1)
+
+        try:
+            session.timeout = 30
+            session.sendline('START PID ' + pid + ' 0')
             session.expect('http://.* ')
 
             self.session = session
@@ -118,12 +122,12 @@ class AcestreamLauncher(object):
             self.notifier.update(self.appname, self.messages['started'], self.icon)
             self.notifier.show()
         except (pexpect.TIMEOUT, pexpect.EOF):
-            print('Timeout connecting to Acestream...')
+            print('Acestream channel unavailable...')
             self.notifier.update(self.appname, self.messages['unavailable'], self.icon)
             self.notifier.show()
 
-            self.acestream.terminate()
-            sys.exit(0)
+            self.acestream.kill()
+            sys.exit(1)
 
     def start_player(self):
         """Start the media player"""
@@ -137,12 +141,12 @@ class AcestreamLauncher(object):
         """Close acestream and media player"""
 
         try:
-            self.player.terminate()
+            self.player.kill()
         except (AttributeError, psutil.NoSuchProcess):
             print('Media Player not running...')
 
         try:
-            self.acestream.terminate()
+            self.acestream.kill()
         except (AttributeError, psutil.NoSuchProcess):
             print('Acestream not running...')
 
@@ -161,7 +165,7 @@ def main():
 
         for process in psutil.process_iter():
             if 'acestreamengine' in process.name():
-                process.terminate()
+                process.kill()
 
         sys.exit(0)
 
