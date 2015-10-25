@@ -23,24 +23,14 @@ class AcestreamLauncher(object):
             help='The acestream url to play'
         )
         parser.add_argument(
-            '--player',
-            help='The media player to use (default: vlc)',
-            default='vlc'
-        )
-        parser.add_argument(
             '--client',
             help='The acestream engine client to use (default: console)',
             default='console'
         )
         parser.add_argument(
-            '--download-limit',
-            help='Download limit in Kb/s (default: 1000)',
-            default='1000'
-        )
-        parser.add_argument(
-            '--upload-limit',
-            help='Upload limit in Kb/s (default: 60)',
-            default='60'
+            '--player',
+            help='The media player to use (default: vlc)',
+            default='vlc'
         )
 
         self.args = parser.parse_args()
@@ -71,11 +61,7 @@ class AcestreamLauncher(object):
             if 'acestreamengine' in process.name():
                 process.kill()
 
-        client = '--client-' + self.args.client
-        download_limit = '--download-limit ' + str(int(self.args.download_limit) * 1024)
-        upload_limit = '--upload-limit ' + str(int(self.args.upload_limit) * 1024)
-
-        self.acestream = psutil.Popen(['acestreamengine', client, download_limit, upload_limit])
+        self.acestream = psutil.Popen(['acestreamengine', '--client-' + self.args.client])
         self.notifier.update(self.appname, self.messages['running'], self.icon)
         self.notifier.show()
 
