@@ -39,8 +39,8 @@ class AcestreamLauncher(object):
         )
         parser.add_argument(
             '--upload-limit',
-            help='Upload limit in Kb/s (default: 40)',
-            default='40'
+            help='Upload limit in Kb/s (default: 60)',
+            default='60'
         )
 
         self.args = parser.parse_args()
@@ -72,8 +72,8 @@ class AcestreamLauncher(object):
                 process.kill()
 
         client = '--client-' + self.args.client
-        download_limit = '--download-limit ' + self.args.download_limit
-        upload_limit = '--upload-limit ' + self.args.upload_limit
+        download_limit = '--download-limit ' + str(int(self.args.download_limit) * 1024)
+        upload_limit = '--upload-limit ' + str(int(self.args.upload_limit) * 1024)
 
         self.acestream = psutil.Popen(['acestreamengine', client, download_limit, upload_limit])
         self.notifier.update(self.appname, self.messages['running'], self.icon)
