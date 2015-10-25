@@ -76,9 +76,9 @@ class AcestreamLauncher(object):
         try:
             session.timeout = 5
             session.sendline('HELLOBG version=3')
-            session.expect('key=.* ')
+            session.expect('key=.*')
 
-            request_key = session.after.strip().split('=')[1]
+            request_key = session.after.split()[0].split('=')[1]
             signature = hashlib.sha1(request_key + product_key).hexdigest()
             response_key = product_key.split('-')[0] + '-' + signature
             pid = self.args.url.split('://')[1]
@@ -100,10 +100,10 @@ class AcestreamLauncher(object):
         try:
             session.timeout = 30
             session.sendline('START PID ' + pid + ' 0')
-            session.expect('http://.* ')
+            session.expect('http://.*')
 
             self.session = session
-            self.url = session.after.strip()
+            self.url = session.after.split()[0]
 
             self.notifier.update(self.appname, self.messages['started'], self.icon)
             self.notifier.show()
