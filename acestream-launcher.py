@@ -99,7 +99,7 @@ class AcestreamLauncher(object):
             sys.exit(1)
 
         try:
-            session.timeout = 60
+            session.timeout = 30
             session.sendline('START PID ' + pid + ' 0')
             session.expect('http://.*')
 
