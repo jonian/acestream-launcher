@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
@@ -6,7 +6,7 @@ import time
 import psutil
 import pexpect
 import hashlib
-import pynotify
+import notify2
 import argparse
 
 class AcestreamLauncher(object):
@@ -46,8 +46,8 @@ class AcestreamLauncher(object):
             'terminated': 'Acestream engine terminated.'
         }
 
-        pynotify.init(self.appname)
-        self.notifier = pynotify.Notification(self.appname)
+        notify2.init(self.appname)
+        self.notifier = notify2.Notification(self.appname)
 
         self.start_acestream()
         self.start_session()
@@ -74,7 +74,7 @@ class AcestreamLauncher(object):
         session = pexpect.spawn('telnet localhost 62062')
 
         try:
-            session.timeout = 5
+            session.timeout = 20
             session.sendline('HELLOBG version=3')
             session.expect('key=.*')
 
@@ -98,7 +98,7 @@ class AcestreamLauncher(object):
             sys.exit(1)
 
         try:
-            session.timeout = 30
+            session.timeout = 60
             session.sendline('START PID ' + pid + ' 0')
             session.expect('http://.*')
 
