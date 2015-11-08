@@ -74,12 +74,13 @@ class AcestreamLauncher(object):
         session = pexpect.spawn('telnet localhost 62062')
 
         try:
-            session.timeout = 20
+            session.timeout = 10
             session.sendline('HELLOBG version=3')
             session.expect('key=.*')
 
-            request_key = session.after.split()[0].split('=')[1]
-            signature = hashlib.sha1(request_key + product_key).hexdigest()
+            request_key = session.after.decode('utf-8').split()[0].split('=')[1]
+            signature = (request_key + product_key).encode('utf-8')
+            signature = hashlib.sha1(signature).hexdigest()
             response_key = product_key.split('-')[0] + '-' + signature
             pid = self.args.url.split('://')[1]
 
@@ -103,7 +104,7 @@ class AcestreamLauncher(object):
             session.expect('http://.*')
 
             self.session = session
-            self.url = session.after.split()[0]
+            self.url = session.after.decode('utf-8').split()[0]
 
             self.notifier.update(self.appname, self.messages['started'], self.icon)
             self.notifier.show()
