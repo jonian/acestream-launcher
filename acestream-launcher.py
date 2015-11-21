@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Acestream Launcher: Open acestream links with any media player"""
+
 import sys
 import time
 import psutil
@@ -10,7 +12,7 @@ import notify2
 import argparse
 
 class AcestreamLauncher(object):
-    """Acestream Launcher: Open acestream links with any media player"""
+    """Acestream Launcher"""
 
     def __init__(self):
         parser = argparse.ArgumentParser(
@@ -33,18 +35,8 @@ class AcestreamLauncher(object):
             default='vlc'
         )
 
-        self.args = parser.parse_args()
-
         self.appname = 'Acestream Launcher'
-        self.icon = self.args.player
-        self.messages = {
-            'running': 'Acestream engine running.',
-            'waiting': 'Waiting for channel response...',
-            'started': 'Streaming started. Launching player.',
-            'noauth': 'Error authenticating to Acestream!',
-            'unavailable': 'Acestream channel unavailable!',
-            'terminated': 'Acestream engine terminated.'
-        }
+        self.args = parser.parse_args()
 
         notify2.init(self.appname)
         self.notifier = notify2.Notification(self.appname)
@@ -54,6 +46,23 @@ class AcestreamLauncher(object):
         self.start_player()
         self.close_player()
 
+    def notify(self, message):
+        """Show player status notifications"""
+
+        icon = self.args.player
+        messages = {
+            'running': 'Acestream engine running.',
+            'waiting': 'Waiting for channel response...',
+            'started': 'Streaming started. Launching player.',
+            'noauth': 'Error authenticating to Acestream!',
+            'unavailable': 'Acestream channel unavailable!',
+            'terminated': 'Acestream engine terminated.'
+        }
+
+        print(messages[message])
+        self.notifier.update(self.appname, messages[message], icon)
+        self.notifier.show()
+
     def start_acestream(self):
         """Start acestream engine"""
 
@@ -62,9 +71,7 @@ class AcestreamLauncher(object):
                 process.kill()
 
         self.acestream = psutil.Popen(['acestreamengine', '--client-' + self.args.client])
-        self.notifier.update(self.appname, self.messages['running'], self.icon)
-        self.notifier.show()
-
+        self.notify('running')
         time.sleep(5)
 
     def start_session(self):
@@ -88,15 +95,10 @@ class AcestreamLauncher(object):
             session.expect('AUTH.*')
             session.sendline('USERDATA [{"gender": "1"}, {"age": "3"}]')
 
-            self.notifier.update(self.appname, self.messages['waiting'], self.icon)
-            self.notifier.show()
+            self.notify('waiting')
         except (pexpect.TIMEOUT, pexpect.EOF):
-            print('Error authenticating to Acestream...')
-            self.notifier.update(self.appname, self.messages['noauth'], self.icon)
-            self.notifier.show()
-
-            self.acestream.kill()
-            sys.exit(1)
+            self.notify('noauth')
+            self.close_player(1)
 
         try:
             session.timeout = 30
@@ -105,16 +107,10 @@ class AcestreamLauncher(object):
 
             self.session = session
             self.url = session.after.decode('utf-8').split()[0]
-
-            self.notifier.update(self.appname, self.messages['started'], self.icon)
-            self.notifier.show()
+            self.notify('started')
         except (pexpect.TIMEOUT, pexpect.EOF):
-            print('Acestream channel unavailable...')
-            self.notifier.update(self.appname, self.messages['unavailable'], self.icon)
-            self.notifier.show()
-
-            self.acestream.kill()
-            sys.exit(1)
+            self.notify('unavailable')
+            self.close_player(1)
 
     def start_player(self):
         """Start the media player"""
@@ -124,7 +120,7 @@ class AcestreamLauncher(object):
         self.session.sendline('STOP')
         self.session.sendline('SHUTDOWN')
 
-    def close_player(self):
+    def close_player(self, code=0):
         """Close acestream and media player"""
 
         try:
@@ -134,13 +130,11 @@ class AcestreamLauncher(object):
 
         try:
             self.acestream.kill()
+            self.notify('terminated')
         except (AttributeError, psutil.NoSuchProcess):
             print('Acestream not running...')
 
-        self.notifier.update(self.appname, self.messages['terminated'], self.icon)
-        self.notifier.show()
-
-        sys.exit(0)
+        sys.exit(code)
 
 def main():
     """Start Acestream Launcher"""
