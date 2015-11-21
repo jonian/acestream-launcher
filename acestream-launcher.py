@@ -55,8 +55,7 @@ class AcestreamLauncher(object):
             'waiting': 'Waiting for channel response...',
             'started': 'Streaming started. Launching player.',
             'noauth': 'Error authenticating to Acestream!',
-            'unavailable': 'Acestream channel unavailable!',
-            'terminated': 'Acestream engine terminated.'
+            'unavailable': 'Acestream channel unavailable!'
         }
 
         print(messages[message])
@@ -107,6 +106,7 @@ class AcestreamLauncher(object):
 
             self.session = session
             self.url = session.after.decode('utf-8').split()[0]
+
             self.notify('started')
         except (pexpect.TIMEOUT, pexpect.EOF):
             self.notify('unavailable')
@@ -130,7 +130,6 @@ class AcestreamLauncher(object):
 
         try:
             self.acestream.kill()
-            self.notify('terminated')
         except (AttributeError, psutil.NoSuchProcess):
             print('Acestream not running...')
 
