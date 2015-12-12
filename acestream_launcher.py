@@ -5,11 +5,11 @@
 
 import sys
 import time
+import hashlib
+import argparse
 import psutil
 import pexpect
-import hashlib
 import notify2
-import argparse
 
 class AcestreamLauncher(object):
     """Acestream Launcher"""
@@ -22,16 +22,26 @@ class AcestreamLauncher(object):
         parser.add_argument(
             'url',
             metavar='URL',
-            help='The acestream url to play'
+            help='the acestream url to play'
+        )
+        parser.add_argument(
+            '--engine-path',
+            help='the acestream engine executable to use (default: system)',
+            default='/usr/bin/acestreamengine'
+        )
+        parser.add_argument(
+            '--lib-path',
+            help='the acestream engine library path to use (default: system)',
+            default='/usr/share/acestream/lib'
         )
         parser.add_argument(
             '--client',
-            help='The acestream engine client to use (default: console)',
+            help='the acestream engine client to use (default: console)',
             default='console'
         )
         parser.add_argument(
             '--player',
-            help='The media player to use (default: vlc)',
+            help='the media player to use (default: vlc)',
             default='vlc'
         )
 
@@ -55,6 +65,7 @@ class AcestreamLauncher(object):
             'waiting': 'Waiting for channel response...',
             'started': 'Streaming started. Launching player.',
             'noauth': 'Error authenticating to Acestream!',
+            'noengine': 'Acstream engine not found in provided path!',
             'unavailable': 'Acestream channel unavailable!'
         }
 
@@ -69,9 +80,19 @@ class AcestreamLauncher(object):
             if 'acestreamengine' in process.name():
                 process.kill()
 
-        self.acestream = psutil.Popen(['acestreamengine', '--client-' + self.args.client])
-        self.notify('running')
-        time.sleep(5)
+        engine = [
+            self.args.engine_path,
+            '--lib-path ' + self.args.lib_path,
+            '--client-' + self.args.client
+        ]
+
+        try:
+            self.acestream = psutil.Popen(engine)
+            self.notify('running')
+            time.sleep(5)
+        except FileNotFoundError:
+            self.notify('noengine')
+            self.close_player(1)
 
     def start_session(self):
         """Start acestream telnet session"""
