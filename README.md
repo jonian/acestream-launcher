@@ -18,4 +18,4 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
     --lib-path LIB_PATH         The acestream engine library path to use (default: system)
 
 ## Installation
-Arch Linux: (AUR Package)[https://aur.archlinux.org/packages/acestream-launcher]
+Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)
