@@ -5,7 +5,7 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
     python, python-psutil, python-pexpect, python-notify2, acestream-engine
 
 ## Usage
-    acestream-launcher URL [--client CLIENT] [--player PLAYER]
+    acestream-launcher URL [--client CLIENT] [--player PLAYER] [--engine-path ENGINE_PATH] [--lib-path LIB_PATH]
 
 ## Positional arguments
     URL               The acestream url to play
