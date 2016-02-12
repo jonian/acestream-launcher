@@ -136,7 +136,9 @@ class AcestreamLauncher(object):
     def start_player(self):
         """Start the media player"""
 
-        self.player = psutil.Popen([self.args.player, self.url])
+        self.playerArgs = self.args.player.split()
+        self.playerArgs.append(self.url)
+        self.player = psutil.Popen(self.playerArgs)
         self.player.wait()
         self.session.sendline('STOP')
         self.session.sendline('SHUTDOWN')
