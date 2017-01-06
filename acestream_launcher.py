@@ -26,7 +26,7 @@ class AcestreamLauncher(object):
         )
         parser.add_argument(
             '-e', '--engine',
-            help='the acestream engine command to use (default: acestreamengine --client-console)',
+            help='the engine command to use (default: acestreamengine --client-console)',
             default='acestreamengine --client-console'
         )
         parser.add_argument(
