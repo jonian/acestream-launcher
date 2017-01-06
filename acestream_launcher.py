@@ -25,12 +25,12 @@ class AcestreamLauncher(object):
             help='the acestream url to play'
         )
         parser.add_argument(
-            '--engine',
+            '-e', '--engine',
             help='the acestream engine command to use (default: acestreamengine --client-console)',
             default='acestreamengine --client-console'
         )
         parser.add_argument(
-            '--player',
+            '-p', '--player',
             help='the media player command to use (default: vlc)',
             default='vlc'
         )
