@@ -71,7 +71,8 @@ class AcestreamLauncher(object):
                 process.kill()
 
         try:
-            self.acestream = psutil.Popen(self.args.engine.split())
+            engine_args = self.args.engine.split()
+            self.acestream = psutil.Popen(engine_args)
             self.notify('running')
             time.sleep(5)
         except FileNotFoundError:
@@ -120,7 +121,10 @@ class AcestreamLauncher(object):
     def start_player(self):
         """Start the media player"""
 
-        self.player = psutil.Popen([*self.args.player.split(), self.url])
+        player_args = self.args.player.split()
+        player_args.append(self.url)
+
+        self.player = psutil.Popen(player_args)
         self.player.wait()
         self.session.sendline('STOP')
         self.session.sendline('SHUTDOWN')
