@@ -26,7 +26,7 @@ class AcestreamLauncher(object):
         )
         parser.add_argument(
             '--engine',
-            help='the acestream engine command to use (default: system)',
+            help='the acestream engine command to use (default: acestreamengine --client-console)',
             default='acestreamengine --client-console'
         )
         parser.add_argument(
@@ -49,7 +49,7 @@ class AcestreamLauncher(object):
     def notify(self, message):
         """Show player status notifications"""
 
-        icon = self.args.player
+        icon = self.args.player.split()[0]
         messages = {
             'running': 'Acestream engine running.',
             'waiting': 'Waiting for channel response...',
