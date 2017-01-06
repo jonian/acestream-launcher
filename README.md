@@ -8,7 +8,7 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
     acestream-launcher URL [--player PLAYER] [--engine ENGINE]
 
 ## Positional arguments
-    URL               The acestream url to play
+    URL                   The acestream url to play
 
 ## Optional arguments
     -h, --help            Show this help message and exit
