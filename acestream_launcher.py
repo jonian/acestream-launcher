@@ -25,23 +25,13 @@ class AcestreamLauncher(object):
             help='the acestream url to play'
         )
         parser.add_argument(
-            '--engine-path',
-            help='the acestream engine executable to use (default: system)',
-            default='/usr/bin/acestreamengine'
-        )
-        parser.add_argument(
-            '--lib-path',
-            help='the acestream engine library path to use (default: system)',
-            default='/usr/share/acestream/lib'
-        )
-        parser.add_argument(
-            '--client',
-            help='the acestream engine client to use (default: console)',
-            default='console'
+            '--engine',
+            help='the acestream engine command to use (default: system)',
+            default='acestreamengine --client-console'
         )
         parser.add_argument(
             '--player',
-            help='the media player to use (default: vlc)',
+            help='the media player command to use (default: vlc)',
             default='vlc'
         )
 
@@ -80,14 +70,8 @@ class AcestreamLauncher(object):
             if 'acestreamengine' in process.name():
                 process.kill()
 
-        engine = [
-            self.args.engine_path,
-            '--lib-path ' + self.args.lib_path,
-            '--client-' + self.args.client
-        ]
-
         try:
-            self.acestream = psutil.Popen(engine)
+            self.acestream = psutil.Popen(self.args.engine.split())
             self.notify('running')
             time.sleep(5)
         except FileNotFoundError:
@@ -136,9 +120,7 @@ class AcestreamLauncher(object):
     def start_player(self):
         """Start the media player"""
 
-        self.playerArgs = self.args.player.split()
-        self.playerArgs.append(self.url)
-        self.player = psutil.Popen(self.playerArgs)
+        self.player = psutil.Popen([*self.args.player.split(), self.url])
         self.player.wait()
         self.session.sendline('STOP')
         self.session.sendline('SHUTDOWN')
