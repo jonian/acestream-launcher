@@ -1,3 +1,5 @@
+buildpack: https://github.com/heroku/heroku-buildpack-python#master
+
 dependencies:
   - python
   - python-psutil
