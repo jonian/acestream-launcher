@@ -1,7 +1,6 @@
 buildpack: https://github.com/heroku/heroku-buildpack-python#master
 
 dependencies:
-  - python
-  - python-psutil
-  - python-pexpect
-  - python-notify2
+  - psutil
+  - pexpect
+  - notify2
