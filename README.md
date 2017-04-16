@@ -16,4 +16,7 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
     -e, --engine ENGINE   The engine command to use (default: acestreamengine --client-console)
 
 ## Installation
+Install required dependencies and run `install.sh` as root. The script will install acestream-launcher in `opt` directory.
+
+## Packages
 Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)
