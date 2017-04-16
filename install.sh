@@ -1,10 +1,21 @@
 #! /bin/sh
 
-mkdir -p "/opt/acestream-launcher"
+pkgname=acestream-launcher
+pkgfile=acestream_launcher
 
-cp -a "*" "/opt/acestream-launcher"
+install() {
+  mkdir -p "/opt/$pkgname"
 
-update-desktop-database "/opt/acestream-launcher"
+  cp "$pkgfile.py" "/opt/$pkgname/$pkgfile.py"
+  cp "$pkgname.desktop" "/opt/$pkgname/$pkgname.desktop"
 
-ln -s "/opt/acestream-launcher/acestream_launcher.py" "/usr/bin/acestream-launcher"
-mv "/opt/acestream-launcher/acestream-launcher.desktop" "/usr/share/applications/acestream-launcher.desktop"
+  update-desktop-database "/opt/$pkgname"
+
+  ln -s "/opt/$pkgname/$pkgfile.py" "/usr/bin/$pkgname"
+  mv "/opt/$pkgname/$pkgname.desktop" "/usr/share/applications/$pkgname.desktop"
+}
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  else install
+fi
