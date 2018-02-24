@@ -10,6 +10,7 @@ import time
 import signal
 import hashlib
 import argparse
+import threading
 import subprocess
 
 
@@ -39,6 +40,8 @@ class AcestreamLauncher(object):
 
     self.name = 'Acestream Launcher'
     self.args = parser.parse_args()
+    self.live = False
+    self.stop = False
     self.icon = self.args.player.split()[0]
 
   @property
@@ -73,9 +76,10 @@ class AcestreamLauncher(object):
 
     messages = {
       'running': 'Acestream engine running...',
-      'started': 'Streaming started, launching player...',
       'noengine': 'Acestream engine not found in provided path!',
       'noplayer': 'Media player not found in provided path!',
+      'waiting': 'Waiting for stream response...',
+      'started': 'Streaming started, launching player...',
       'unavailable': 'Stream unavailable!'
     }
 
@@ -122,6 +126,42 @@ class AcestreamLauncher(object):
 
     return self.get_url('ace/getstream', format='json', sid=stream_uid, **query_args)
 
+  def get_stream_stats(self):
+    req_output = self.request(self.stat_url)
+    output_res = req_output.get('response', False)
+    output_err = req_output.get('error', False)
+
+    if output_err:
+      return
+
+    for key in output_res.keys():
+      setattr(self, key, output_res[key])
+
+    if self.status == 'check':
+      return
+
+    if self.status == 'dl':
+      self.live = True
+
+    if self.is_live:
+      label = 'LIVE - down: %.1f kb/s up: %.1f kb/s peers: %d'
+      stats = (self.speed_down, self.speed_up, self.peers)
+    else:
+      label = 'VOD - total: %.2f%% down: %.1f kb/s up: %.1f kb/s peers: %d'
+      stats = (self.total_progress, self.speed_down, self.speed_up, self.peers)
+
+    sys.stdout.write("\r%s" % (label % stats))
+    sys.stdout.flush()
+
+  def watch_stream_stats(self):
+    while not self.stop:
+      time.sleep(1)
+      self.get_stream_stats()
+
+  def watch_stream(self):
+    thread = threading.Thread(target=self.watch_stream_stats)
+    thread.start()
+
   def start_engine(self):
     """Start acestream engine"""
 
@@ -149,6 +189,12 @@ class AcestreamLauncher(object):
 
     for key in output_res.keys():
       setattr(self, key, output_res[key])
+
+    self.notify('waiting')
+    self.watch_stream()
+
+    while not self.live:
+      time.sleep(1)
 
     self.notify('started')
 
@@ -179,6 +225,8 @@ class AcestreamLauncher(object):
   def quit(self):
     """Stop acestream and media player"""
 
+    self.stop = True
+
     if hasattr(self, 'command_url'):
       stop_url = self.get_url(self.command_url, method='stop')
       self.request(stop_url)
@@ -187,6 +235,7 @@ class AcestreamLauncher(object):
       print('\n\nAcestream engine stopping...')
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
 
+    time.sleep(2)
     print('\n\nTerminated')
     sys.exit()
 
