@@ -40,6 +40,22 @@ class AcestreamLauncher(object):
     self.args = parser.parse_args()
     self.icon = self.args.player.split()[0]
 
+  @property
+
+  def notifier(self):
+    """Check if libnotify is available"""
+
+    if hasattr(self, 'libnotify'):
+      return self.libnotify
+
+    try:
+      subprocess.run(['notify-send', '-v'])
+      self.libnotify = True
+    except OSError:
+      self.libnotify = False
+
+    return self.libnotify
+
   def notify(self, message, terminate=False):
     """Show player status notifications"""
 
@@ -51,12 +67,13 @@ class AcestreamLauncher(object):
       'unavailable': 'Stream unavailable!'
     }
 
-    try:
-      notification = ('int:transient:1', self.icon, self.name, messages[message])
-      os.system("notify-send -h %s -t 10 -u low -i '%s' '%s' '%s'" % notification)
-    finally:
-      sys.stdout.write("\r%s" % messages[message])
-      sys.stdout.flush()
+    message = messages[message]
+    sys.stdout.write("\r%s" % message)
+    sys.stdout.flush()
+
+    if self.notifier:
+      args = ['-h', 'int:transient:1', '-i', self.icon, self.name, message]
+      subprocess.run(['notify-send', *args])
 
     if terminate:
       self.quit()
