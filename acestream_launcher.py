@@ -56,6 +56,17 @@ class AcestreamLauncher(object):
 
     return self.libnotify
 
+  @property
+
+  def running(self):
+    """Check if acestream engine id running"""
+
+    status_url = self.get_url('webui/api/service', method='get_version', format='json')
+    req_output = self.request(status_url)
+    output_res = req_output.get('result', False)
+
+    return output_res is not False
+
   def notify(self, message, terminate=False):
     """Show player status notifications"""
 
@@ -110,10 +121,7 @@ class AcestreamLauncher(object):
   def start_engine(self):
     """Start acestream engine"""
 
-    status_url = self.get_url('webui/api/service', method='get_version', format='json')
-    req_output = self.request(status_url)
-
-    if req_output.get('result', False):
+    if self.running:
       return
 
     try:
