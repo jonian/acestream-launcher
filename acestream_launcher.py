@@ -79,12 +79,16 @@ class AcestreamLauncher(object):
       self.quit()
 
   def get_url(self, query_path, **params):
+    """Get engine API url"""
+
     query_params = ['%s=%s' % (i, params[i]) for i in params.keys()]
     query_params = '&'.join(query_params)
 
     return 'http://127.0.0.1:6878/%s?%s' % (query_path, query_params)
 
   def request(self, url):
+    """Send engine API request"""
+
     curl_proccess = subprocess.Popen(['curl', '-s', url], stdout=subprocess.PIPE)
     output, error = curl_proccess.communicate()
 
@@ -94,6 +98,8 @@ class AcestreamLauncher(object):
       return {}
 
   def get_stream_url(self):
+    """Get engine API stream url"""
+
     if self.args.url.startswith('http'):
       query_args = { 'url': self.args.url }
     else:
