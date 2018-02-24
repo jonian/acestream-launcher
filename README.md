@@ -2,7 +2,7 @@
 Acestream Launcher allows you to open Acestream links with a Media Player of your choice
 
 ## Dependencies
-    python, python-psutil, python-pexpect, python-notify2, acestream-engine
+    python, curl, libnotify, acestream-engine
 
 ## Usage
     acestream-launcher URL [--player PLAYER] [--engine ENGINE]
@@ -12,7 +12,7 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
 
 ## Optional arguments
     -h, --help            Show this help message and exit
-    -p, --player PLAYER   The media player command to use (default: vlc)
+    -p, --player PLAYER   The media player command to use (default: mpv)
     -e, --engine ENGINE   The engine command to use (default: acestreamengine --client-console)
 
 ## Installation

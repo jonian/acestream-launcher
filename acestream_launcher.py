@@ -3,159 +3,159 @@
 
 """Acestream Launcher: Open acestream links with any media player"""
 
+import os
 import sys
+import json
 import time
-import hashlib
+import signal
 import argparse
-import psutil
-import pexpect
-import notify2
+import subprocess
+
 
 class AcestreamLauncher(object):
-    """Acestream Launcher"""
+  """Acestream Launcher"""
 
-    def __init__(self):
-        parser = argparse.ArgumentParser(
-            prog='acestream-launcher',
-            description='Open acestream links with any media player'
-        )
-        parser.add_argument(
-            'url',
-            metavar='URL',
-            help='the acestream url to play'
-        )
-        parser.add_argument(
-            '-e', '--engine',
-            help='the engine command to use (default: acestreamengine --client-console)',
-            default='acestreamengine --client-console'
-        )
-        parser.add_argument(
-            '-p', '--player',
-            help='the media player command to use (default: vlc)',
-            default='vlc'
-        )
+  def __init__(self):
+    parser = argparse.ArgumentParser(
+      prog='acestream-launcher',
+      description='Open acestream links with any media player'
+    )
+    parser.add_argument(
+      'url',
+      metavar='URL',
+      help='the acestream url to play'
+    )
+    parser.add_argument(
+      '-e', '--engine',
+      help='the engine command to use (default: acestreamengine --client-console)',
+      default='acestreamengine --client-console'
+    )
+    parser.add_argument(
+      '-p', '--player',
+      help='the media player command to use (default: mpv)',
+      default='mpv'
+    )
 
-        self.appname = 'Acestream Launcher'
-        self.args = parser.parse_args()
+    self.name = 'Acestream Launcher'
+    self.args = parser.parse_args()
+    self.icon = self.args.player.split()[0]
 
-        notify2.init(self.appname)
-        self.notifier = notify2.Notification(self.appname)
+  def notify(self, message, terminate=False):
+    """Show player status notifications"""
 
-        self.start_acestream()
-        self.start_session()
-        self.start_player()
-        self.close_player()
-
-    def notify(self, message):
-        """Show player status notifications"""
-
-        icon = self.args.player.split()[0]
-        messages = {
-            'running': 'Acestream engine running.',
-            'waiting': 'Waiting for channel response...',
-            'started': 'Streaming started. Launching player.',
-            'noauth': 'Error authenticating to Acestream!',
-            'noengine': 'Acstream engine not found in provided path!',
-            'unavailable': 'Acestream channel unavailable!'
-        }
-
-        print(messages[message])
-        self.notifier.update(self.appname, messages[message], icon)
-        self.notifier.show()
-
-    def start_acestream(self):
-        """Start acestream engine"""
-
-        for process in psutil.process_iter():
-            if 'acestreamengine' in process.name():
-                process.kill()
-
-        try:
-            engine_args = self.args.engine.split()
-            self.acestream = psutil.Popen(engine_args)
-            self.notify('running')
-            time.sleep(5)
-        except FileNotFoundError:
-            self.notify('noengine')
-            self.close_player(1)
-
-    def start_session(self):
-        """Start acestream telnet session"""
-
-        product_key = 'n51LvQoTlJzNGaFxseRK-uvnvX-sD4Vm5Axwmc4UcoD-jruxmKsuJaH0eVgE'
-        session = pexpect.spawn('telnet localhost 62062')
-
-        try:
-            session.timeout = 10
-            session.sendline('HELLOBG version=3')
-            session.expect('key=.*')
-
-            request_key = session.after.decode('utf-8').split()[0].split('=')[1]
-            signature = (request_key + product_key).encode('utf-8')
-            signature = hashlib.sha1(signature).hexdigest()
-            response_key = product_key.split('-')[0] + '-' + signature
-            pid = self.args.url.split('://')[1]
-
-            session.sendline('READY key=' + response_key)
-            session.expect('AUTH.*')
-            session.sendline('USERDATA [{"gender": "1"}, {"age": "3"}]')
-
-            self.notify('waiting')
-        except (pexpect.TIMEOUT, pexpect.EOF):
-            self.notify('noauth')
-            self.close_player(1)
-
-        try:
-            session.timeout = 30
-            session.sendline('START PID ' + pid + ' 0')
-            session.expect('http://.*')
-
-            self.session = session
-            self.url = session.after.decode('utf-8').split()[0]
-
-            self.notify('started')
-        except (pexpect.TIMEOUT, pexpect.EOF):
-            self.notify('unavailable')
-            self.close_player(1)
-
-    def start_player(self):
-        """Start the media player"""
-
-        player_args = self.args.player.split()
-        player_args.append(self.url)
-
-        self.player = psutil.Popen(player_args)
-        self.player.wait()
-        self.session.sendline('STOP')
-        self.session.sendline('SHUTDOWN')
-
-    def close_player(self, code=0):
-        """Close acestream and media player"""
-
-        try:
-            self.player.kill()
-        except (AttributeError, psutil.NoSuchProcess):
-            print('Media Player not running...')
-
-        try:
-            self.acestream.kill()
-        except (AttributeError, psutil.NoSuchProcess):
-            print('Acestream not running...')
-
-        sys.exit(code)
-
-def main():
-    """Start Acestream Launcher"""
+    messages = {
+      'running': 'Acestream engine running...',
+      'started': 'Streaming started, launching player...',
+      'noengine': 'Acestream engine not found in provided path!',
+      'noplayer': 'Media player not found in provided path!',
+      'unavailable': 'Stream unavailable!'
+    }
 
     try:
-        AcestreamLauncher()
-    except (KeyboardInterrupt, EOFError):
-        print('Acestream Launcher exiting...')
+      notification = ('int:transient:1', self.icon, self.name, messages[message])
+      os.system("notify-send -h %s -t 10 -u low -i '%s' '%s' '%s'" % notification)
+    finally:
+      sys.stdout.write("\r%s" % messages[message])
+      sys.stdout.flush()
 
-        for process in psutil.process_iter():
-            if 'acestreamengine' in process.name():
-                process.kill()
+    if terminate:
+      self.quit()
 
-        sys.exit(0)
+  def get_url(self, query_path, **params):
+    query_params = ['%s=%s' % (i, params[i]) for i in params.keys()]
+    query_params = '&'.join(query_params)
 
-main()
+    return 'http://127.0.0.1:6878/%s?%s' % (query_path, query_params)
+
+  def request(self, url):
+    curl_proccess = subprocess.Popen(['curl', '-s', url], stdout=subprocess.PIPE)
+    output, error = curl_proccess.communicate()
+
+    try:
+      return json.loads(output)
+    except json.decoder.JSONDecodeError:
+      return {}
+
+  def get_stream(self):
+    if self.args.url.startswith('http'):
+      query_args = { 'url': self.args.url }
+    else:
+      query_args = { 'id': self.args.url.split('://')[-1] }
+
+    return self.get_url('ace/getstream', format='json', **query_args)
+
+  def start_engine(self):
+    """Start acestream engine"""
+
+    status_url = self.get_url('webui/api/service', method='get_version', format='json')
+    req_output = self.request(status_url)
+
+    if req_output.get('result', False):
+      return
+
+    try:
+      engine_args = self.args.engine.split()
+      self.engine = subprocess.Popen(engine_args, stdout=subprocess.PIPE)
+
+      self.notify('running')
+      time.sleep(2)
+    except OSError:
+      self.notify('noengine', True)
+
+  def start_stream(self):
+    """Strart streaming"""
+
+    req_output = self.request(self.get_stream())
+    output_res = req_output.get('response', False)
+    output_err = req_output.get('error', False)
+
+    if output_err or not output_res:
+      self.notify('unavailable', True)
+
+    for key in output_res.keys():
+      setattr(self, key, output_res[key])
+
+    self.notify('started')
+
+  def start_player(self):
+    """Start media player"""
+
+    player_args = self.args.player.split()
+    player_args.append(self.playback_url)
+
+    try:
+      self.player = subprocess.Popen(player_args, stdout=subprocess.PIPE)
+      self.player.communicate()
+    except OSError:
+      self.notify('noplayer', True)
+
+  def run(self):
+    """Start acestream and media player"""
+
+    try:
+      self.start_engine()
+      self.start_stream()
+      self.start_player()
+    except KeyboardInterrupt:
+      pass
+
+    self.quit()
+
+  def quit(self):
+    """Stop acestream and media player"""
+
+    if hasattr(self, 'command_url'):
+      stop_url = self.get_url(self.command_url, method='stop')
+      self.request(stop_url)
+
+    if hasattr(self, 'engine'):
+      print('\n\nAcestream engine stopping...')
+      os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
+
+    print('\n\nTerminated')
+    sys.exit()
+
+
+if __name__ == '__main__':
+  launcher = AcestreamLauncher()
+  launcher.run()
