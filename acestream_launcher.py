@@ -138,7 +138,7 @@ class AcestreamLauncher(object):
     output_res = req_output.get('response', False)
     output_err = req_output.get('error', False)
 
-    if output_err:
+    if output_err or self.stop:
       return
 
     for key in output_res.keys():
@@ -249,10 +249,11 @@ class AcestreamLauncher(object):
       self.request(stop_url)
 
     if hasattr(self, 'engine'):
+      print('\n')
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
+    else:
+      print('\n\nTerminated')
 
-    time.sleep(2)
-    print('\n\nTerminated')
     sys.exit()
 
 
