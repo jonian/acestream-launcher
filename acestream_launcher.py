@@ -132,6 +132,8 @@ class AcestreamLauncher(object):
     return self.get_url('ace/getstream', format='json', sid=stream_uid, **query_args)
 
   def get_stream_stats(self):
+    """Get stream statistics"""
+
     req_output = self.request(self.stat_url)
     output_res = req_output.get('response', False)
     output_err = req_output.get('error', False)
@@ -158,11 +160,15 @@ class AcestreamLauncher(object):
     self.write(label % stats)
 
   def watch_stream_stats(self):
+    """Update stream statistics"""
+
     while not self.stop:
       time.sleep(1)
       self.get_stream_stats()
 
   def watch_stream(self):
+    """Run stream watcher in thread"""
+
     thread = threading.Thread(target=self.watch_stream_stats)
     thread.start()
 
