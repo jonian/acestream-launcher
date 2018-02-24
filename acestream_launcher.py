@@ -147,15 +147,22 @@ class AcestreamLauncher(object):
     if self.status == 'check':
       return
 
-    if self.status == 'dl':
+    if not self.live and self.status == 'dl':
       self.live = True
+      time.sleep(3)
+
+    labels = { 'dl': 'playing', 'prebuf': 'buffering' }
+    status = labels[self.status]
+
+    labels = 'down: %.1f kb/s up: %.1f kb/s peers: %d'
+    sstats = labels % (self.speed_down, self.speed_up, self.peers)
 
     if self.is_live:
-      label = 'LIVE - down: %.1f kb/s up: %.1f kb/s peers: %d'
-      stats = (self.speed_down, self.speed_up, self.peers)
+      label = 'LIVE - status: %s %s'
+      stats = (status, sstats)
     else:
-      label = 'VOD - total: %.2f%% down: %.1f kb/s up: %.1f kb/s peers: %d'
-      stats = (self.total_progress, self.speed_down, self.speed_up, self.peers)
+      label = 'VOD - status: %s total: %.2f%% %s'
+      stats = (status, self.total_progress, sstats)
 
     self.write(label % stats)
 
