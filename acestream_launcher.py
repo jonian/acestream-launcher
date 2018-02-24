@@ -71,6 +71,12 @@ class AcestreamLauncher(object):
 
     return output_res is not False
 
+  def write(self, message):
+    """Write message to stdout"""
+
+    sys.stdout.write("\x1b[2K\r%s" % message)
+    sys.stdout.flush()
+
   def notify(self, message, terminate=False):
     """Show player status notifications"""
 
@@ -84,8 +90,7 @@ class AcestreamLauncher(object):
     }
 
     message = messages[message]
-    sys.stdout.write("\r%s" % message)
-    sys.stdout.flush()
+    self.write(message)
 
     if self.notifier:
       args = ['-h', 'int:transient:1', '-i', self.icon, self.name, message]
@@ -150,8 +155,7 @@ class AcestreamLauncher(object):
       label = 'VOD - total: %.2f%% down: %.1f kb/s up: %.1f kb/s peers: %d'
       stats = (self.total_progress, self.speed_down, self.speed_up, self.peers)
 
-    sys.stdout.write("\r%s" % (label % stats))
-    sys.stdout.flush()
+    self.write(label % stats)
 
   def watch_stream_stats(self):
     while not self.stop:
