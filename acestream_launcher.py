@@ -8,6 +8,7 @@ import sys
 import json
 import time
 import signal
+import hashlib
 import argparse
 import subprocess
 
@@ -112,11 +113,14 @@ class AcestreamLauncher(object):
     """Get engine API stream url"""
 
     if self.args.url.startswith('http'):
+      stream_uid = hashlib.sha1(self.args.url.encode('utf-8')).hexdigest()
       query_args = { 'url': self.args.url }
     else:
-      query_args = { 'id': self.args.url.split('://')[-1] }
+      stream_pid = self.args.url.split('://')[-1]
+      stream_uid = hashlib.sha1(stream_pid.encode('utf-8')).hexdigest()
+      query_args = { 'id': stream_pid }
 
-    return self.get_url('ace/getstream', format='json', **query_args)
+    return self.get_url('ace/getstream', format='json', sid=stream_uid, **query_args)
 
   def start_engine(self):
     """Start acestream engine"""
