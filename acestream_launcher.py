@@ -13,7 +13,6 @@ import argparse
 import threading
 import subprocess
 
-
 class AcestreamLauncher(object):
   """Acestream Launcher"""
 
@@ -43,6 +42,7 @@ class AcestreamLauncher(object):
     self.live = False
     self.stop = False
     self.icon = self.args.player.split()[0]
+    self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
 
   @property
 
@@ -53,7 +53,7 @@ class AcestreamLauncher(object):
       return self.libnotify
 
     try:
-      subprocess.run(['notify-send', '-v'], stdout=subprocess.PIPE)
+      subprocess.run(['notify-send', '-v'], **self.stdo)
       self.libnotify = True
     except OSError:
       self.libnotify = False
@@ -89,7 +89,7 @@ class AcestreamLauncher(object):
 
     if self.notifier:
       args = ['-h', 'int:transient:1', '-i', self.icon, self.name, message]
-      subprocess.run(['notify-send', *args], stdout=subprocess.PIPE)
+      subprocess.run(['notify-send', *args], **self.stdo)
 
     if terminate:
       self.quit()
@@ -105,7 +105,7 @@ class AcestreamLauncher(object):
   def request(self, url):
     """Send engine API request"""
 
-    curl_proccess = subprocess.Popen(['curl', '-s', url], stdout=subprocess.PIPE)
+    curl_proccess = subprocess.Popen(['curl', '-s', url], **self.stdo)
     output, error = curl_proccess.communicate()
 
     try:
@@ -170,7 +170,7 @@ class AcestreamLauncher(object):
 
     try:
       engine_args = self.args.engine.split()
-      self.engine = subprocess.Popen(engine_args, stdout=subprocess.PIPE)
+      self.engine = subprocess.Popen(engine_args, **self.stdo)
 
       self.notify('running')
       time.sleep(2)
@@ -205,7 +205,7 @@ class AcestreamLauncher(object):
     player_args.append(self.playback_url)
 
     try:
-      self.player = subprocess.Popen(player_args, stdout=subprocess.PIPE)
+      self.player = subprocess.Popen(player_args, **self.stdo)
       self.player.communicate()
     except OSError:
       self.notify('noplayer', True)
