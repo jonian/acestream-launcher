@@ -93,7 +93,7 @@ class AcestreamLauncher(object):
     except json.decoder.JSONDecodeError:
       return {}
 
-  def get_stream(self):
+  def get_stream_url(self):
     if self.args.url.startswith('http'):
       query_args = { 'url': self.args.url }
     else:
@@ -122,7 +122,7 @@ class AcestreamLauncher(object):
   def start_stream(self):
     """Strart streaming"""
 
-    req_output = self.request(self.get_stream())
+    req_output = self.request(self.get_stream_url())
     output_res = req_output.get('response', False)
     output_err = req_output.get('error', False)
 
