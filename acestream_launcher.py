@@ -49,7 +49,7 @@ class AcestreamLauncher(object):
       return self.libnotify
 
     try:
-      subprocess.run(['notify-send', '-v'])
+      subprocess.run(['notify-send', '-v'], stdout=subprocess.PIPE)
       self.libnotify = True
     except OSError:
       self.libnotify = False
@@ -84,7 +84,7 @@ class AcestreamLauncher(object):
 
     if self.notifier:
       args = ['-h', 'int:transient:1', '-i', self.icon, self.name, message]
-      subprocess.run(['notify-send', *args])
+      subprocess.run(['notify-send', *args], stdout=subprocess.PIPE)
 
     if terminate:
       self.quit()
