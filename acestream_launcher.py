@@ -149,7 +149,7 @@ class AcestreamLauncher(object):
 
     if not self.live and self.status == 'dl':
       self.live = True
-      time.sleep(3)
+      time.sleep(2)
 
     labels = { 'dl': 'playing', 'prebuf': 'buffering' }
     status = labels[self.status]
@@ -249,7 +249,6 @@ class AcestreamLauncher(object):
       self.request(stop_url)
 
     if hasattr(self, 'engine'):
-      print('\n\nAcestream engine stopping...')
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
 
     time.sleep(2)
