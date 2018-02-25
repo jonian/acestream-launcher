@@ -154,6 +154,12 @@ class AcestreamLauncher(object):
       self.live = True
       time.sleep(2)
 
+    if self.atty:
+      self.write_stream_stats()
+
+  def write_stream_stats(self):
+    """Print stream statistics"""
+
     labels = { 'dl': 'playing', 'prebuf': 'buffering' }
     status = labels[self.status]
 
