@@ -37,6 +37,7 @@ class AcestreamLauncher(object):
       default='mpv'
     )
 
+    self.atty = sys.stdin.isatty()
     self.name = 'Acestream Launcher'
     self.args = parser.parse_args()
     self.live = False
@@ -90,9 +91,11 @@ class AcestreamLauncher(object):
     }
 
     message = messages[message]
-    self.write(message)
 
-    if self.notifier:
+    if self.atty:
+      self.write(message)
+
+    if not self.atty and self.notifier:
       args = ['-h', 'int:transient:1', '-i', self.icon, self.name, message]
       subprocess.run(['notify-send', *args], **self.stdo)
 
