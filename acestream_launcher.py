@@ -187,7 +187,7 @@ class AcestreamLauncher(object):
 
     try:
       engine_args = self.args.engine.split()
-      self.engine = subprocess.Popen(engine_args, **self.stdo)
+      self.engine = subprocess.Popen(engine_args, preexec_fn=os.setsid, **self.stdo)
 
       self.notify('running')
       time.sleep(2)
