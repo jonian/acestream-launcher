@@ -244,7 +244,7 @@ class AcestreamLauncher(object):
       self.start_stream()
       self.start_player()
     except KeyboardInterrupt:
-      pass
+      self.stop = True
 
     self.quit()
 
@@ -258,11 +258,9 @@ class AcestreamLauncher(object):
       self.request(stop_url)
 
     if hasattr(self, 'engine'):
-      print('\n')
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
-    else:
-      print('\n\nTerminated')
 
+    print('\n\nExiting...')
     sys.exit()
 
 
