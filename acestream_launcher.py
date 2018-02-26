@@ -155,6 +155,8 @@ class AcestreamLauncher(object):
 
     if not self.live and self.status == 'dl':
       self.live = True
+      self.poll = self.atty
+
       time.sleep(2)
 
     if self.atty:
