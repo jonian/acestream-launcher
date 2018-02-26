@@ -41,7 +41,7 @@ class AcestreamLauncher(object):
     self.name = 'Acestream Launcher'
     self.args = parser.parse_args()
     self.live = False
-    self.stop = False
+    self.poll = True
     self.icon = self.args.player.split()[0]
     self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
 
@@ -137,11 +137,14 @@ class AcestreamLauncher(object):
   def get_stream_stats(self):
     """Get stream statistics"""
 
+    if not self.poll:
+      return
+
     req_output = self.request(self.stat_url)
     output_res = req_output.get('response', False)
     output_err = req_output.get('error', False)
 
-    if output_err or self.stop:
+    if output_err:
       return
 
     for key in output_res.keys():
@@ -178,7 +181,7 @@ class AcestreamLauncher(object):
   def watch_stream_stats(self):
     """Update stream statistics"""
 
-    while not self.stop:
+    while self.poll:
       time.sleep(1)
       self.get_stream_stats()
 
@@ -244,14 +247,14 @@ class AcestreamLauncher(object):
       self.start_stream()
       self.start_player()
     except KeyboardInterrupt:
-      self.stop = True
+      self.poll = False
 
     self.quit()
 
   def quit(self):
     """Stop acestream and media player"""
 
-    self.stop = True
+    self.poll = False
 
     if hasattr(self, 'command_url'):
       stop_url = self.get_url(self.command_url, method='stop')
