@@ -38,11 +38,9 @@ class AcestreamLauncher(object):
     )
 
     self.atty = sys.stdin.isatty()
-    self.name = 'Acestream Launcher'
     self.args = parser.parse_args()
     self.live = False
     self.poll = True
-    self.icon = self.args.player.split()[0]
     self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
 
   @property
@@ -96,8 +94,11 @@ class AcestreamLauncher(object):
       self.write(message)
 
     if not self.atty and self.notifier:
-      args = ['-h', 'int:transient:1', '-i', self.icon, self.name, message]
-      subprocess.run(['notify-send', *args], **self.stdo)
+      name = 'Acestream Launcher'
+      icon = self.args.player.split()[0]
+      args = ['notify-send', '-h', 'int:transient:1', '-i', icon, name, message]
+
+      subprocess.run(args, **self.stdo)
 
     if terminate:
       self.quit()
@@ -118,7 +119,7 @@ class AcestreamLauncher(object):
 
     try:
       return json.loads(output)
-    except json.decoder.JSONDecodeError:
+    except ValueError:
       return {}
 
   def get_stream_url(self):
