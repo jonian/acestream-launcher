@@ -4,6 +4,8 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
 ## Dependencies
     python, curl, libnotify, acestream-engine
 
+Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.acestream.org/wiki/index.php/Engine_HTTP_API) that is available on acestream-engine `v3.1` or later.
+
 ## Usage
     acestream-launcher URL [--player PLAYER] [--engine ENGINE]
 
