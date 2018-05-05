@@ -204,8 +204,10 @@ class AcestreamLauncher(object):
       engine_args = self.args.engine.split()
       self.engine = subprocess.Popen(engine_args, preexec_fn=os.setsid, **self.stdo)
 
+      while not self.running:
+        time.sleep(1)
+
       self.notify('running')
-      time.sleep(2)
     except OSError:
       self.notify('noengine', True)
 
