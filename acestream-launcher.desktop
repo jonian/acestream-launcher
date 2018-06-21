@@ -2,10 +2,10 @@
 Version=1.0
 Name=Acestream Launcher
 GenericName=Media player
-Comment=Open Acestream links with VLC Media Player
+Comment=Open Acestream links with MPV Media Player
 Exec=/usr/bin/acestream-launcher %u
 TryExec=/usr/bin/acestream-launcher
-Icon=multimedia-vido-player
+Icon=multimedia-video-player
 Terminal=false
 Type=Application
 MimeType=x-scheme-handler/acestream;
