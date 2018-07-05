@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env bash
 
 pkgname=acestream-launcher
 pkgfile=acestream_launcher
