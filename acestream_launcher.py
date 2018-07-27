@@ -49,11 +49,10 @@ class AcestreamLauncher(object):
   def notifier(self):
     """Check if libnotify is available"""
 
-    if hasattr(self, 'libnotify'):
-      return self.libnotify
-    else:
+    if not hasattr(self, 'libnotify'):
       self.libnotify = shutil.which('notify-send') is None
-      return self.libnotify
+
+    return self.libnotify
 
   @property
 
