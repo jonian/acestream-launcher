@@ -98,7 +98,7 @@ class AcestreamLauncher(object):
       icon = self.args.player.split()[0]
       args = ['notify-send', '-h', 'int:transient:1', '-i', icon, name, message]
 
-      subprocess.run(args, **self.stdo)
+      subprocess.call(args, **self.stdo)
 
     if terminate:
       self.quit()
