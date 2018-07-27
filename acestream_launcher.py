@@ -57,7 +57,7 @@ class AcestreamLauncher(object):
   @property
 
   def running(self):
-    """Check if acestream engine id running"""
+    """Check if acestream engine is running"""
 
     status_url = self.get_url('webui/api/service', method='get_version', format='json')
     req_output = self.request(status_url)
