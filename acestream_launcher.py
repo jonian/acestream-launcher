@@ -8,6 +8,7 @@ import sys
 import json
 import time
 import signal
+import shutil
 import hashlib
 import argparse
 import threading
@@ -50,14 +51,9 @@ class AcestreamLauncher(object):
 
     if hasattr(self, 'libnotify'):
       return self.libnotify
-
-    try:
-      subprocess.run(['notify-send', '-v'], **self.stdo)
-      self.libnotify = True
-    except OSError:
-      self.libnotify = False
-
-    return self.libnotify
+    else:
+      self.libnotify = shutil.which('notify-send') is None
+      return self.libnotify
 
   @property
 
