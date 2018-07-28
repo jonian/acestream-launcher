@@ -92,7 +92,6 @@ class Acestream(object):
 
     if not self.live and self.status == 'dl':
       self.live = True
-      time.sleep(2)
 
     self.emit('stats')
 
@@ -131,7 +130,7 @@ class Acestream(object):
     if hasattr(self, 'engine'):
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
 
-  def open_stream(self, url, stats=False):
+  def open_stream(self, url, emit_stats=False):
     """Open acestream url"""
 
     req_output = self.request(self.get_stream_url(url))
@@ -146,7 +145,7 @@ class Acestream(object):
 
     self.emit('message', 'waiting')
 
-    if stats:
+    if emit_stats:
       self.poll = True
       self.poll_stats()
 
