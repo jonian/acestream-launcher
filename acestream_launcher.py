@@ -5,7 +5,6 @@
 
 import os
 import sys
-import shutil
 import signal
 import argparse
 import subprocess
@@ -44,8 +43,14 @@ class AcestreamLauncher(object):
   def notifier(self):
     """Check if libnotify is available"""
 
-    if not hasattr(self, 'libnotify'):
-      self.libnotify = shutil.which('notify-send') is None
+    if hasattr(self, 'libnotify'):
+      return self.libnotify
+
+    try:
+      subprocess.run(['notify-send', '-v'], **self.stdo)
+      self.libnotify = True
+    except OSError:
+      self.libnotify = False
 
     return self.libnotify
 
