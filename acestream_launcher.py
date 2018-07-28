@@ -106,8 +106,8 @@ class AcestreamLauncher(object):
     self.engine = acestream.Acestream()
 
     self.engine.connect('message', self.notify)
-    self.engine.connect('error', self.notify)
     self.engine.connect('stats', self.stats)
+    self.engine.connect('error', self.quit)
 
     self.engine.start_engine(self.args.engine.split())
     self.engine.open_stream(self.args.url, self.atty)

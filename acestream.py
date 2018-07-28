@@ -124,7 +124,8 @@ class Acestream(object):
 
       self.emit('message', 'running')
     except OSError:
-      self.emit('error', 'noengine', True)
+      self.emit('message', 'noengine')
+      self.emit('error')
 
   def stop_engine(self):
     """Stop acestream engine"""
@@ -143,7 +144,8 @@ class Acestream(object):
     output_err = req_output.get('error', False)
 
     if output_err or not output_res:
-      self.emit('error', 'unavailable', True)
+      self.emit('message', 'unavailable')
+      self.emit('error')
 
     for key in output_res.keys():
       setattr(self, key, output_res[key])
