@@ -34,7 +34,7 @@ class Acestream(object):
   def connect(self, event_name, callback_fn):
     self._events.append({ 'event_name': event_name, 'callback_fn': callback_fn })
 
-  def emmit(self, event_name, *callback_args):
+  def emit(self, event_name, *callback_args):
     for event in self._events:
       if event['event_name'] == event_name:
         event['callback_fn'](*callback_args)
@@ -94,7 +94,7 @@ class Acestream(object):
       self.live = True
       time.sleep(2)
 
-    self.emmit('stats')
+    self.emit('stats')
 
   def poll_stream_stats(self):
     """Update stream statistics"""
@@ -121,9 +121,9 @@ class Acestream(object):
       while not self.running:
         time.sleep(1)
 
-      self.emmit('message', 'running')
+      self.emit('message', 'running')
     except OSError:
-      self.emmit('error', 'noengine', True)
+      self.emit('error', 'noengine', True)
 
   def stop_engine(self):
     """Stop acestream engine"""
@@ -139,12 +139,12 @@ class Acestream(object):
     output_err = req_output.get('error', False)
 
     if output_err or not output_res:
-      self.emmit('error', 'unavailable', True)
+      self.emit('error', 'unavailable', True)
 
     for key in output_res.keys():
       setattr(self, key, output_res[key])
 
-    self.emmit('message', 'waiting')
+    self.emit('message', 'waiting')
 
     if stats:
       self.poll = True
@@ -153,7 +153,7 @@ class Acestream(object):
     while not self.live:
       time.sleep(1)
 
-    self.emmit('message', 'started')
+    self.emit('message', 'started')
 
   def close_stream(self):
     """Close current stream"""
