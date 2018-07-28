@@ -13,12 +13,9 @@ import subprocess
 class Acestream(object):
   """Acestream Engine"""
 
-  _observers = []
+  _events = []
 
   def __init__(self):
-    self._observers.append(self)
-    self._observed_events = []
-
     self.live = False
     self.poll = False
     self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
@@ -35,13 +32,12 @@ class Acestream(object):
     return output_res is not False
 
   def connect(self, event_name, callback_fn):
-    self._observed_events.append({ 'event_name': event_name, 'callback_fn': callback_fn })
+    self._events.append({ 'event_name': event_name, 'callback_fn': callback_fn })
 
   def emmit(self, event_name, *callback_args):
-    for observer in self._observers:
-      for observable in observer._observed_events:
-        if observable['event_name'] == event_name:
-          observable['callback_fn'](*callback_args)
+    for event in self._events:
+      if event['event_name'] == event_name:
+        event['callback_fn'](*callback_args)
 
   def request(self, url):
     """Send engine API request"""
