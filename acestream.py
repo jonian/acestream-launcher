@@ -108,14 +108,15 @@ class Acestream(object):
     thread = threading.Thread(target=self.poll_stream_stats)
     thread.start()
 
-  def start_engine(self, args):
+  def start_engine(self, args=None):
     """Start acestream engine"""
 
     if self.running:
       return
 
     try:
-      self.engine = subprocess.Popen(args, preexec_fn=os.setsid, **self.stdo)
+      engine_args = args if args else ['acestreamengine', '--client-console']
+      self.engine = subprocess.Popen(engine_args, preexec_fn=os.setsid, **self.stdo)
 
       while not self.running:
         time.sleep(1)
