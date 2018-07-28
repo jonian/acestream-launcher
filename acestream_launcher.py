@@ -47,7 +47,7 @@ class AcestreamLauncher(object):
       return self.libnotify
 
     try:
-      subprocess.run(['notify-send', '-v'], **self.stdo)
+      subprocess.call(['notify-send', '-v'], **self.stdo)
       self.libnotify = True
     except OSError:
       self.libnotify = False
