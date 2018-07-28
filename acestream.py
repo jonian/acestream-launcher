@@ -15,9 +15,10 @@ class Acestream(object):
 
   _events = []
 
-  def __init__(self, host='127.0.0.1', port='6878'):
+  def __init__(self, host='127.0.0.1', port='6878', timeout=10):
     self.host = host
     self.port = port
+    self.wait = timeout
     self.live = False
     self.poll = False
     self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
@@ -32,6 +33,19 @@ class Acestream(object):
     output_res = req_output.get('result', False)
 
     return output_res is not False
+
+  def check_api(self):
+    """Check if acestream HTTP API is available"""
+
+    self.emit('message', 'connecting')
+
+    while self.wait > 0 and not self.running:
+      time.sleep(1)
+      self.wait = self.wait - 1
+
+    if self.wait == 0:
+      self.emit('message', 'noconnect')
+      self.emit('error')
 
   def connect(self, event_name, callback_fn):
     self._events.append({ 'event_name': event_name, 'callback_fn': callback_fn })
@@ -138,8 +152,7 @@ class Acestream(object):
   def open_stream(self, url, emit_stats=False):
     """Open acestream url"""
 
-    while not self.running:
-      time.sleep(1)
+    self.check_api()
 
     req_output = self.request(self.get_stream_url(url))
     output_res = req_output.get('response', False)

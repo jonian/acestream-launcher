@@ -66,6 +66,8 @@ class AcestreamLauncher(object):
     messages = {
       'running': 'Acestream engine running...',
       'noengine': 'Acestream engine not found in provided path!',
+      'connecting': 'Connecting to Acestream engine...',
+      'noconnect': 'Cannot connect to Acestream engine!',
       'noplayer': 'Media player not found in provided path!',
       'waiting': 'Waiting for stream response...',
       'started': 'Streaming started, launching player...',
