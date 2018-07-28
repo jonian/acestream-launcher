@@ -15,7 +15,9 @@ class Acestream(object):
 
   _events = []
 
-  def __init__(self):
+  def __init__(self, host='127.0.0.1', port='6878'):
+    self.host = host
+    self.port = port
     self.live = False
     self.poll = False
     self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
@@ -56,7 +58,7 @@ class Acestream(object):
     query_params = ['%s=%s' % (i, params[i]) for i in params.keys()]
     query_params = '&'.join(query_params)
 
-    return 'http://127.0.0.1:6878/%s?%s' % (query_path, query_params)
+    return 'http://%s:%s/%s?%s' % (self.host, self.port, query_path, query_params)
 
   def get_stream_url(self, url):
     """Get engine API stream url"""
