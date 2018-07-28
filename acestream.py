@@ -90,8 +90,12 @@ class Acestream(object):
     if self.status == 'check':
       return
 
+    if self.downloaded == 0 and self.speed_down == 0:
+      self.status = 'prebuf'
+
     if not self.live and self.status == 'dl':
       self.live = True
+      time.sleep(2)
 
     self.emit('stats')
 
@@ -118,9 +122,6 @@ class Acestream(object):
       engine_args = args if args else ['acestreamengine', '--client-console']
       self.engine = subprocess.Popen(engine_args, preexec_fn=os.setsid, **self.stdo)
 
-      while not self.running:
-        time.sleep(1)
-
       self.emit('message', 'running')
     except OSError:
       self.emit('error', 'noengine', True)
@@ -133,6 +134,9 @@ class Acestream(object):
 
   def open_stream(self, url, emit_stats=False):
     """Open acestream url"""
+
+    while not self.running:
+      time.sleep(1)
 
     req_output = self.request(self.get_stream_url(url))
     output_res = req_output.get('response', False)
