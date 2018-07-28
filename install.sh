@@ -7,6 +7,7 @@ install() {
   mkdir -p "/opt/$pkgname"
 
   cp "$pkgfile.py" "/opt/$pkgname/$pkgfile.py"
+  cp "acestream.py" "/opt/$pkgname/acestream.py"
   cp "$pkgname.desktop" "/opt/$pkgname/$pkgname.desktop"
 
   update-desktop-database "/opt/$pkgname"
