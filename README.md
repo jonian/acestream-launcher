@@ -21,4 +21,5 @@ Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.a
 Install required dependencies and run `install.sh` as root. The script will install acestream-launcher in `opt` directory.
 
 ## Packages
-Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)
+Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)  
+OpenSUSE: [Build Service](https://build.opensuse.org/package/show/home:drommer/acestream-launcher) by [@Drommer](https://github.com/Drommer)
