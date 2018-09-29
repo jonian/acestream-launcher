@@ -21,13 +21,13 @@ class Acestream(object):
 
   _events = []
 
-  def __init__(self, host='127.0.0.1', port='6878', timeout=10):
+  def __init__(self, host='127.0.0.1', port='6878', timeout=10, output=subprocess.PIPE):
     self.host = host
     self.port = port
     self.wait = timeout
     self.live = False
     self.poll = False
-    self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
+    self.stdo = { 'stdout': output, 'stderr': output }
 
   @property
 

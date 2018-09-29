@@ -33,10 +33,20 @@ class AcestreamLauncher(object):
       help='the media player command to use (default: mpv)',
       default='mpv'
     )
+    parser.add_argument(
+      '-v', '--verbose',
+      help='show engine and media player output in console',
+      action='store_true'
+    )
 
     self.atty = sys.stdin.isatty()
     self.args = parser.parse_args()
-    self.stdo = { 'stdout': subprocess.PIPE, 'stderr': subprocess.PIPE }
+    self.stdo = { 'stdout': self.output, 'stderr': self.output }
+
+  @property
+
+  def output(self):
+    return None if self.args.verbose else subprocess.PIPE
 
   @property
 
@@ -110,7 +120,7 @@ class AcestreamLauncher(object):
   def start_stream(self):
     """Strart streaming"""
 
-    self.engine = acestream.Acestream()
+    self.engine = acestream.Acestream(output=self.output)
 
     self.engine.connect('message', self.notify)
     self.engine.connect('stats', self.stats)
