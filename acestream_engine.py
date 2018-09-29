@@ -16,7 +16,7 @@ except ImportError:
   import urllib as request
 
 
-class Acestream(object):
+class AcestreamEngine(object):
   """Acestream Engine"""
 
   _events = []

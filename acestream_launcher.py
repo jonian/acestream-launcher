@@ -8,7 +8,9 @@ import sys
 import signal
 import argparse
 import subprocess
-import acestream
+
+from acestream_engine import AcestreamEngine
+
 
 class AcestreamLauncher(object):
   """Acestream Launcher"""
@@ -120,7 +122,7 @@ class AcestreamLauncher(object):
   def start_stream(self):
     """Strart streaming"""
 
-    self.engine = acestream.Acestream(output=self.output)
+    self.engine = AcestreamEngine(output=self.output)
 
     self.engine.connect('message', self.notify)
     self.engine.connect('stats', self.stats)
