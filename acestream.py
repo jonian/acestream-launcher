@@ -10,6 +10,12 @@ import hashlib
 import threading
 import subprocess
 
+try:
+  import urllib.request as request
+except ImportError:
+  import urllib as request
+
+
 class Acestream(object):
   """Acestream Engine"""
 
@@ -58,12 +64,10 @@ class Acestream(object):
   def request(self, url):
     """Send engine API request"""
 
-    curl_proccess = subprocess.Popen(['curl', '-s', url], **self.stdo)
-    output, error = curl_proccess.communicate()
-
     try:
-      return json.loads(output)
-    except ValueError:
+      response = request.urlopen(url)
+      return json.loads(response.read())
+    except (IOError, ValueError):
       return {}
 
   def get_url(self, query_path, **params):
