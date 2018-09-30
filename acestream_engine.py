@@ -26,7 +26,7 @@ class AcestreamEngine(object):
     self.port = port
     self.wait = timeout
     self.live = False
-    self.poll = False
+    self.poll = True
     self.stdo = { 'stdout': output, 'stderr': output }
 
   @property
@@ -174,14 +174,12 @@ class AcestreamEngine(object):
       setattr(self, key, output_res[key])
 
     self.emit('message', 'waiting')
-
-    if emit_stats:
-      self.poll = True
-      self.poll_stats()
+    self.poll_stats()
 
     while not self.live:
       time.sleep(1)
 
+    self.poll = emit_stats
     self.emit('message', 'started')
 
   def close_stream(self):
