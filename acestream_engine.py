@@ -54,9 +54,13 @@ class AcestreamEngine(object):
       self.emit('error')
 
   def connect(self, event_name, callback_fn):
+    """Register event and callback function"""
+
     self._events.append({ 'event_name': event_name, 'callback_fn': callback_fn })
 
   def emit(self, event_name, *callback_args):
+    """Emit event and execute callback function"""
+
     for event in self._events:
       if event['event_name'] == event_name:
         event['callback_fn'](*callback_args)
