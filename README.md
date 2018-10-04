@@ -20,7 +20,7 @@ Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.a
 
 ## Installation
 Install required dependencies: 
-`sudo apt-get install python libnotify`
+`sudo apt-get install python libnotify acestream-engine`
 
 Install acestream-launcher:  
 `git clone https://github.com/thepante/acestream-launcher.git`  
