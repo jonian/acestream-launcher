@@ -33,5 +33,5 @@ The script will install acestream-launcher in `/opt` directory.
 Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)  
 OpenSUSE: [Build Service](https://build.opensuse.org/package/show/home:drommer/acestream-launcher) by [@Drommer](https://github.com/Drommer)  
 
-## Integration with your browser  
-Now that you installed this launcher, you can set it as default for the `acestream://` links. Check your browser preferences for default Applications. 
+## Integrate it with your browser  
+Now that you installed this launcher, you can set it as default for the `acestream://` links. Check your browser preferences for default applications. 
