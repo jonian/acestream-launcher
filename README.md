@@ -19,8 +19,19 @@ Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.a
     -v, --verbose         Show engine and media player output in console
 
 ## Installation
-Install required dependencies and run `install.sh` as root. The script will install acestream-launcher in `opt` directory.
+Install required dependencies: 
+`sudo apt-get install python libnotify`
+
+Install acestream-launcher:  
+`git clone https://github.com/thepante/acestream-launcher.git`  
+`cd acestream-launcher`  
+`sudo ./install.sh`  
+
+The script will install acestream-launcher in `/opt` directory.
 
 ## Packages
 Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)  
-OpenSUSE: [Build Service](https://build.opensuse.org/package/show/home:drommer/acestream-launcher) by [@Drommer](https://github.com/Drommer)
+OpenSUSE: [Build Service](https://build.opensuse.org/package/show/home:drommer/acestream-launcher) by [@Drommer](https://github.com/Drommer)  
+
+## Integration with your browser  
+Now that you installed this launcher, you can set it as default for the `acestream://` links. Check your browser preferences for default Applications. 
