@@ -9,6 +9,11 @@ import signal
 import argparse
 import subprocess
 
+try:
+  import configparser
+except ImportError:
+  import ConfigParser as configparser
+
 from acestream_engine import AcestreamEngine
 
 
@@ -16,6 +21,9 @@ class AcestreamLauncher(object):
   """Acestream Launcher"""
 
   def __init__(self):
+    self.atty = sys.stdin.isatty()
+    self.opts = self.read_config()
+
     parser = argparse.ArgumentParser(
       prog='acestream-launcher',
       description='Open acestream links with any media player'
@@ -28,20 +36,20 @@ class AcestreamLauncher(object):
     parser.add_argument(
       '-e', '--engine',
       help='the engine command to use (default: acestreamengine --client-console)',
-      default='acestreamengine --client-console'
+      default=self.get_option('engine')
     )
     parser.add_argument(
       '-p', '--player',
       help='the media player command to use (default: mpv)',
-      default='mpv'
+      default=self.get_option('player')
     )
     parser.add_argument(
       '-v', '--verbose',
       help='show engine and media player output in console',
-      action='store_true'
+      action='store_true',
+      default=self.get_option('verbose', 'getboolean')
     )
 
-    self.atty = sys.stdin.isatty()
     self.args = parser.parse_args()
     self.stdo = { 'stdout': self.output, 'stderr': self.output }
 
@@ -65,6 +73,27 @@ class AcestreamLauncher(object):
       self.libnotify = False
 
     return self.libnotify
+
+  def read_config(self):
+    """Read configuration file"""
+
+    config = configparser.RawConfigParser({
+      'engine': 'acestreamengine --client-console',
+      'player': 'mpv',
+      'verbose': 'False'
+    })
+
+    config.add_section('tty')
+    config.add_section('browser')
+    config.read(os.path.expanduser('~/.config/acestream-launcher/config'))
+
+    return config
+
+  def get_option(self, option, method='get'):
+    """Get configuration option"""
+
+    section = 'tty' if self.atty else 'browser'
+    return getattr(self.opts, method)(section, option)
 
   def write(self, message):
     """Write message to stdout"""
