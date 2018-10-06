@@ -6,8 +6,8 @@ pkgfile=acestream_launcher
 install() {
   mkdir -p "/opt/$pkgname"
 
-  cp "*.py" "/opt/$pkgname"
-  cp "$pkgname.desktop" "/opt/$pkgname/$pkgname.desktop"
+  cp *.py /opt/$pkgname
+  cp $pkgname.desktop /opt/$pkgname/$pkgname.desktop
 
   update-desktop-database "/opt/$pkgname"
 
