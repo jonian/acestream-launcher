@@ -17,6 +17,20 @@ Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.a
     -p, --player PLAYER   The media player command to use (default: mpv)
     -e, --engine ENGINE   The engine command to use (default: acestreamengine --client-console)
     -v, --verbose         Show engine and media player output in console
+    
+## Configuration
+Create `~/.config/acestream-launcher/config` file to override the default arguments. Use `tty` and `browser` sections to set different options when executing the script from the console or the web browser.
+
+    [DEFAULT]
+    player = vlc
+    verbose = true
+
+    [tty]
+    engine = acestreamengine --client-console
+
+    [browser]
+    engine = acestreamengine --client-gtk --log-file /home/jonian/.ACEStream/acestream.log
+    verbose = false
 
 ## Requisites
 Install required dependencies: 
@@ -40,6 +54,9 @@ Acestream engine Snap package option:
     sudo ./install.sh
 
 The script will install acestream-launcher in `/opt` directory.
+
+## Installation
+Install required dependencies and run `install.sh` as root. The script will install acestream-launcher in `opt` directory.
 
 ## Packages
 Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)  
