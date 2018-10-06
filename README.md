@@ -18,20 +18,6 @@ Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.a
     -e, --engine ENGINE   The engine command to use (default: acestreamengine --client-console)
     -v, --verbose         Show engine and media player output in console
 
-## Configuration
-Create `~/.config/acestream-launcher/config` file to override the default arguments. Use `tty` and `browser` sections to set different options when executing the script from the console or the web browser.
-
-    [DEFAULT]
-    player = vlc
-    verbose = true
-    
-    [tty]
-    engine = acestreamengine --client-console
-    
-    [browser]
-    engine = acestreamengine --client-gtk --log-file /home/jonian/.ACEStream/acestream.log
-    verbose = false
-
 ## Requisites
 Install required dependencies: 
 
