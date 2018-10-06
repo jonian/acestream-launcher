@@ -17,7 +17,7 @@ Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.a
     -p, --player PLAYER   The media player command to use (default: mpv)
     -e, --engine ENGINE   The engine command to use (default: acestreamengine --client-console)
     -v, --verbose         Show engine and media player output in console
-
+    
 ## Configuration
 Create `~/.config/acestream-launcher/config` file to override the default arguments. Use `tty` and `browser` sections to set different options when executing the script from the console or the web browser.
 
@@ -32,9 +32,35 @@ Create `~/.config/acestream-launcher/config` file to override the default argume
     engine = acestreamengine --client-gtk --log-file /home/jonian/.ACEStream/acestream.log
     verbose = false
 
+## Requisites
+Install required dependencies: 
+
+    sudo apt-get install python libnotify
+    
+Acestream engine (you can find actual links [here](http://wiki.acestream.org/wiki/index.php/Download#Linux)):
+
+    wget "http://dl.acestream.org/linux/acestream_3.1.16_ubuntu_16.04_x86_64.tar.gz"
+    tar zxvf acestream_3.1.16_ubuntu_16.04_x86_64.tar.gz
+    mv acestream_3.1.16_ubuntu_16.04_x86_64 /opt/acestream
+
+Acestream engine Snap package option: 
+   
+    sudo snap install acestreamplayer
+   
+## Installation:  
+
+    git clone https://github.com/jonian/acestream-launcher.git
+    cd acestream-launcher
+    sudo ./install.sh
+
+The script will install acestream-launcher in `/opt` directory.
+
 ## Installation
 Install required dependencies and run `install.sh` as root. The script will install acestream-launcher in `opt` directory.
 
 ## Packages
 Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)  
 OpenSUSE: [Build Service](https://build.opensuse.org/package/show/home:drommer/acestream-launcher) by [@Drommer](https://github.com/Drommer)
+
+## Browser integration  
+Once it is installed, you can set it as default for the `acestream://` links in your browser. Check your browser preferences for default applications.
