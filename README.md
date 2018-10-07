@@ -29,7 +29,7 @@ URL                   The acestream url to play
 ## Configuration
 Create `~/.config/acestream-launcher/config` file to override the default arguments. Use `tty` and `browser` sections to set different options when executing the script from the console or the web browser.
 
-```toml
+```text
 [DEFAULT]
 player = vlc
 verbose = true
