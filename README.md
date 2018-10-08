@@ -58,6 +58,10 @@ wget "http://dl.acestream.org/linux/acestream_3.1.16_ubuntu_16.04_x86_64.tar.gz"
 tar zxvf acestream_3.1.16_ubuntu_16.04_x86_64.tar.gz
 sudo mv acestream_3.1.16_ubuntu_16.04_x86_64 /opt/acestream
 
+wget "http://archive.ubuntu.com/ubuntu/pool/universe/m/m2crypto/m2crypto_0.24.0.orig.tar.xz"
+tar xf m2crypto_0.24.0.orig.tar.xz
+sudo mv M2Crypto-0.24.0/M2Crypto /opt/acestream/lib/M2Crypto
+
 sudo sed -i "/ROOT=/c\ROOT=\/opt\/acestream" /opt/acestream/start-engine
 sudo ln -sf /opt/acestream/start-engine /usr/bin/acestreamengine
 ```
