@@ -139,6 +139,9 @@ class AcestreamLauncher(object):
   def stats(self):
     """Print stream statistics"""
 
+    if hasattr(self, 'exiting'):
+      return
+
     labels = { 'dl': 'playing', 'prebuf': 'buffering' }
     status = labels[self.engine.status]
 
