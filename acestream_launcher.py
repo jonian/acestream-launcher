@@ -101,7 +101,7 @@ class AcestreamLauncher(object):
     sys.stdout.write("\x1b[2K\r%s" % message)
     sys.stdout.flush()
 
-  def notify(self, message, terminate=False):
+  def notify(self, message):
     """Show player status notifications"""
 
     messages = {
@@ -115,7 +115,10 @@ class AcestreamLauncher(object):
       'unavailable': 'Stream unavailable!'
     }
 
-    message = messages[message]
+    message = messages.get(message, None)
+
+    if not message or hasattr(self, 'exiting'):
+      return
 
     if self.atty:
       self.write(message)
@@ -126,9 +129,6 @@ class AcestreamLauncher(object):
       args = ['notify-send', '-h', 'int:transient:1', '-i', icon, name, message]
 
       subprocess.call(args, **self.stdo)
-
-    if terminate:
-      self.quit()
 
   def stats(self):
     """Print stream statistics"""
@@ -182,11 +182,17 @@ class AcestreamLauncher(object):
 
     self.engine.start_engine(self.args.engine.split(), self.output)
 
-  def quit(self, abort=False):
+  def quit(self):
     """Stop acestream and media player"""
 
-    self.engine.close_stream()
-    self.engine.stop_engine()
+    if hasattr(self, 'exiting'):
+      return
+
+    self.exiting = True
+
+    if hasattr(self, 'engine'):
+      self.engine.close_stream()
+      self.engine.stop_engine()
 
     if hasattr(self, 'player'):
       self.player.stop_player()
