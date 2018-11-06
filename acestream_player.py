@@ -30,8 +30,8 @@ class AcestreamPlayer(object):
 
     try:
       self.player = subprocess.Popen(args, preexec_fn=os.setsid, **kwargs)
-      self.emit('message', 'playing')
-      self.emit('playing')
+      self.emit('message', 'start')
+      self.emit('start')
 
       self.player.communicate()
       delattr(self, 'player')
