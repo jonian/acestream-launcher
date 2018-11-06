@@ -80,6 +80,20 @@ class AcestreamEngine(object):
 
     return self.get_url('ace/getstream', format='json', sid=stream_uid, **query_args)
 
+  def open_url(self, url):
+    """Open URL request on engine API"""
+
+    req_output = self.request(self.get_stream_url(url))
+    output_res = req_output.get('response', False)
+    output_err = req_output.get('error', False)
+
+    if output_err or not output_res:
+      self.emit('message', 'unavailable')
+      self.emit('error')
+
+    for key in output_res.keys():
+      setattr(self, key, output_res[key])
+
   def update_stream_stats(self):
     """Update stream statistics"""
 
@@ -158,17 +172,7 @@ class AcestreamEngine(object):
       self.emit('message', 'noconnect')
       self.emit('error')
 
-    req_output = self.request(self.get_stream_url(url))
-    output_res = req_output.get('response', False)
-    output_err = req_output.get('error', False)
-
-    if output_err or not output_res:
-      self.emit('message', 'unavailable')
-      self.emit('error')
-
-    for key in output_res.keys():
-      setattr(self, key, output_res[key])
-
+    self.open_url(url)
     self.emit('message', 'waiting')
     self.poll_stats()
 
