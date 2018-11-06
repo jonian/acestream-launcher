@@ -145,6 +145,12 @@ class AcestreamEngine(object):
       self.engine = subprocess.Popen(args, **options)
       self.emit('message', 'running')
       self.emit('running')
+
+      self.engine.communicate()
+      delattr(self, 'engine')
+
+      self.emit('message', 'exit')
+      self.emit('exit')
     except OSError:
       self.emit('message', 'noengine')
       self.emit('error')

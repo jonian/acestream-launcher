@@ -174,6 +174,7 @@ class AcestreamLauncher(object):
     self.engine.connect('message', self.notify)
     self.engine.connect('stats', self.stats)
     self.engine.connect('error', self.quit)
+    self.engine.connect('exit', self.quit)
 
     self.engine.connect('running', self.start_stream)
     self.engine.connect('playing', self.start_player)
