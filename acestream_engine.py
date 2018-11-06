@@ -83,14 +83,11 @@ class AcestreamEngine(object):
   def update_stream_stats(self):
     """Update stream statistics"""
 
-    if not self.poll:
-      return
-
     req_output = self.request(self.stat_url)
     output_res = req_output.get('response', False)
     output_err = req_output.get('error', False)
 
-    if output_err:
+    if output_err or not output_res:
       return
 
     for key in output_res.keys():
