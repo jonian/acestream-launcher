@@ -5,7 +5,6 @@
 
 import os
 import sys
-import signal
 import argparse
 import subprocess
 
@@ -15,6 +14,7 @@ except ImportError:
   import ConfigParser as configparser
 
 from acestream_engine import AcestreamEngine
+from acestream_player import AcestreamPlayer
 
 
 class AcestreamLauncher(object):
@@ -156,15 +156,16 @@ class AcestreamLauncher(object):
   def start_player(self):
     """Start media player"""
 
+    self.player = AcestreamPlayer()
+
+    self.player.connect('message', self.notify)
+    self.player.connect('error', self.quit)
+    self.player.connect('exit', self.quit)
+
     player_args = self.args.player.split()
     player_args.append(self.engine.playback_url)
 
-    try:
-      self.player = subprocess.Popen(player_args, preexec_fn=os.setsid, **self.stdo)
-      self.player.communicate()
-      self.quit()
-    except OSError:
-      self.notify('noplayer', True)
+    self.player.start_player(player_args, self.output)
 
   def run(self):
     """Start acestream and media player"""
@@ -187,8 +188,8 @@ class AcestreamLauncher(object):
     self.engine.close_stream()
     self.engine.stop_engine()
 
-    if abort and hasattr(self, 'player'):
-      os.killpg(os.getpgid(self.player.pid), signal.SIGTERM)
+    if hasattr(self, 'player'):
+      self.player.stop_player()
 
     print('\n\nExiting...')
     sys.exit()
