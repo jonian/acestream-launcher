@@ -133,14 +133,13 @@ class AcestreamEngine(object):
       self.live = True
       time.sleep(2)
 
-    self.emit('stats')
-
   def poll_stream_stats(self):
     """Update stream statistics"""
 
     while self.poll:
       time.sleep(1)
       self.update_stream_stats()
+      self.emit('stats')
 
   def poll_stats(self):
     """Run stream stats watcher in thread"""
@@ -168,7 +167,10 @@ class AcestreamEngine(object):
   def start_engine(self, args=None, output=subprocess.PIPE):
     """Start AceStream Engine"""
 
-    if not self.running:
+    if self.running:
+      self.emit('message', 'running')
+      self.emit('running')
+    else:
       args = args if args else ['acestreamengine', '--client-console']
       opts = { 'preexec_fn': os.setsid, 'stdout': output, 'stderr': output }
 
@@ -181,7 +183,7 @@ class AcestreamEngine(object):
     if hasattr(self, 'engine'):
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
 
-  def open_stream(self, url, emit_stats=False, timeout=10):
+  def open_stream(self, url, emit_stats=False, timeout=30):
     """Open AceStream URL"""
 
     self.emit('message', 'connecting')
