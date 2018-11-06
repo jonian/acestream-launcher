@@ -147,11 +147,11 @@ class AcestreamEngine(object):
     thread = threading.Thread(target=self.poll_stream_stats)
     thread.start()
 
-  def run_engine(self, args, options):
+  def run_engine(self, args, kwargs):
     """Start AceStream Engine process"""
 
     try:
-      self.engine = subprocess.Popen(args, **options)
+      self.engine = subprocess.Popen(args, preexec_fn=os.setsid, **kwargs)
       self.emit('message', 'running')
       self.emit('running')
 
@@ -164,17 +164,16 @@ class AcestreamEngine(object):
       self.emit('message', 'noengine')
       self.emit('error')
 
-  def start_engine(self, args=None, output=subprocess.PIPE):
+  def start_engine(self, command='acestreamengine --client-console', kwargs={}):
     """Start AceStream Engine"""
 
     if self.running:
       self.emit('message', 'running')
       self.emit('running')
     else:
-      args = args if args else ['acestreamengine', '--client-console']
-      opts = { 'preexec_fn': os.setsid, 'stdout': output, 'stderr': output }
+      cmargs = command.split()
+      thread = threading.Thread(target=self.run_engine, args=[cmargs, kwargs])
 
-      thread = threading.Thread(target=self.run_engine, args=[args, opts])
       thread.start()
 
   def stop_engine(self):

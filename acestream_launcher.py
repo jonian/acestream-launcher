@@ -171,10 +171,7 @@ class AcestreamLauncher(object):
     self.player.connect('error', self.quit)
     self.player.connect('exit', self.quit)
 
-    player_args = self.args.player.split()
-    player_args.append(url)
-
-    self.player.start_player(player_args, self.output)
+    self.player.start_player(url=url, command=self.args.player, kwargs=self.stdo)
 
   def run(self):
     """Start acestream and media player"""
@@ -189,7 +186,7 @@ class AcestreamLauncher(object):
     self.engine.connect('running', self.start_stream)
     self.engine.connect('playing', self.start_player)
 
-    self.engine.start_engine(self.args.engine.split(), self.output)
+    self.engine.start_engine(command=self.args.engine, kwargs=self.stdo)
 
   def quit(self):
     """Stop acestream and media player"""

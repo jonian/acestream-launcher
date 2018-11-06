@@ -25,11 +25,11 @@ class AcestreamPlayer(object):
       if event['event_name'] == event_name:
         event['callback_fn'](*callback_args)
 
-  def run_player(self, args, options):
+  def run_player(self, args, kwargs):
     """Start media player process"""
 
     try:
-      self.player = subprocess.Popen(args, **options)
+      self.player = subprocess.Popen(args, preexec_fn=os.setsid, **kwargs)
       self.emit('message', 'playing')
       self.emit('playing')
 
@@ -42,13 +42,13 @@ class AcestreamPlayer(object):
       self.emit('message', 'noplayer')
       self.emit('error')
 
-  def start_player(self, args=None, output=subprocess.PIPE):
+  def start_player(self, url, command='mpv', kwargs={}):
     """Start media player"""
 
-    args = args if args else ['mpv']
-    opts = { 'preexec_fn': os.setsid, 'stdout': output, 'stderr': output }
+    cmargs = command.split()
+    cmargs.append(url)
 
-    thread = threading.Thread(target=self.run_player, args=[args, opts])
+    thread = threading.Thread(target=self.run_player, args=[cmargs, kwargs])
     thread.start()
 
   def stop_player(self):
