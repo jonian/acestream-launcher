@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Acestream Engine: Communicate with the Acestream Engine HTTP API"""
+"""AceStream Engine: Communicate with the AceStream Engine HTTP API"""
 
 import os
 import json
@@ -17,7 +17,7 @@ except ImportError:
 
 
 class AcestreamEngine(object):
-  """Acestream Engine"""
+  """AceStream Engine"""
 
   _events = []
 
@@ -32,7 +32,7 @@ class AcestreamEngine(object):
   @property
 
   def running(self):
-    """Check if acestream engine is running"""
+    """Check if AceStream Engine is running"""
 
     status_url = self.get_url('webui/api/service', method='get_version', format='json')
     req_output = self.request(status_url)
@@ -137,7 +137,7 @@ class AcestreamEngine(object):
     thread.start()
 
   def start_engine(self, args=None):
-    """Start acestream engine"""
+    """Start AceStream Engine"""
 
     if self.running:
       return
@@ -153,13 +153,13 @@ class AcestreamEngine(object):
       self.emit('error')
 
   def stop_engine(self):
-    """Stop acestream engine"""
+    """Stop AceStream Engine"""
 
     if hasattr(self, 'engine'):
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
 
   def open_stream(self, url, emit_stats=False):
-    """Open acestream url"""
+    """Open AceStream URL"""
 
     self.check_api()
 
