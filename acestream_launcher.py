@@ -154,6 +154,7 @@ class AcestreamLauncher(object):
     self.engine = AcestreamEngine(output=self.output)
 
     self.engine.connect('message', self.notify)
+    self.engine.connect('playing', self.start_player)
     self.engine.connect('stats', self.stats)
     self.engine.connect('error', self.quit)
 
@@ -176,7 +177,6 @@ class AcestreamLauncher(object):
     """Start acestream and media player"""
 
     self.start_stream()
-    self.start_player()
     self.quit()
 
   def quit(self, abort=False):

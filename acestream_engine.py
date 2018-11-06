@@ -180,7 +180,9 @@ class AcestreamEngine(object):
       time.sleep(1)
 
     self.poll = emit_stats
+
     self.emit('message', 'started')
+    self.emit('playing')
 
   def close_stream(self):
     """Close current stream"""
