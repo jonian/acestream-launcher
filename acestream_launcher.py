@@ -136,24 +136,24 @@ class AcestreamLauncher(object):
 
       subprocess.call(args, **self.stdo)
 
-  def stats(self):
+  def stats(self, engine):
     """Print stream statistics"""
 
     if hasattr(self, 'exiting'):
       return
 
     labels = { 'dl': 'playing', 'prebuf': 'buffering' }
-    status = labels[self.engine.status]
+    status = labels[engine.status]
 
     labels = 'down: %.1f kb/s up: %.1f kb/s peers: %d'
-    sstats = labels % (self.engine.speed_down, self.engine.speed_up, self.engine.peers)
+    sstats = labels % (engine.speed_down, engine.speed_up, engine.peers)
 
-    if self.engine.is_live:
+    if engine.is_live:
       label = 'LIVE - status: %s %s'
       stats = (status, sstats)
     else:
       label = 'VOD - status: %s total: %.2f%% %s'
-      stats = (status, self.engine.total_progress, sstats)
+      stats = (status, engine.total_progress, sstats)
 
     self.write(label % stats)
 

@@ -139,7 +139,7 @@ class AcestreamEngine(object):
     while self.poll:
       time.sleep(1)
       self.update_stream_stats()
-      self.emit('stats')
+      self.emit('stats', self)
 
   def poll_stats(self):
     """Run stream stats watcher in thread"""
