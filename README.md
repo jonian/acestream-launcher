@@ -45,13 +45,13 @@ verbose = false
 ```
 
 ## Requirements
-Install required dependencies:
+Install required dependencies (compatible with python 2 and 3):
 
 ```shell
 sudo apt-get install python
 ```
 
-Install optional dependencies:
+Install optional dependencies (support for desktop notifications):
 
 ```shell
 sudo apt-get install libnotify
