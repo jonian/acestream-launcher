@@ -15,16 +15,16 @@ acestream-launcher URL [--player PLAYER] [--engine ENGINE]
 
 ## Positional arguments
 ```text
-URL                   The acestream url to play
+URL                    The acestream url to play
 ```
 
 ## Optional arguments
 ```text
--h, --help            Show this help message and exit
--p, --player  PLAYER  The media player command to use (default: mpv)
--e, --engine  ENGINE  The engine command to use (default: acestreamengine --client-console)
--t, --timeout TIME    Time in seconds to wait for stream playback (default: 30)
--v, --verbose         Show engine and media player output in console
+-h, --help             Show this help message and exit
+-p, --player  PLAYER   The media player command to use (default: mpv)
+-e, --engine  ENGINE   The engine command to use (default: acestreamengine --client-console)
+-t, --timeout TIMEOUT  Time in seconds to wait for stream playback (default: 30)
+-v, --verbose          Show engine and media player output in console
 ```
 
 ## Configuration
