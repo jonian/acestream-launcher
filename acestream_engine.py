@@ -147,6 +147,7 @@ class AcestreamEngine(object):
       self.engine = subprocess.Popen(engine_args, preexec_fn=os.setsid, **self.stdo)
 
       self.emit('message', 'running')
+      self.emit('running')
     except OSError:
       self.emit('message', 'noengine')
       self.emit('error')
@@ -181,7 +182,7 @@ class AcestreamEngine(object):
 
     self.poll = emit_stats
 
-    self.emit('message', 'started')
+    self.emit('message', 'playing')
     self.emit('playing')
 
   def close_stream(self):
