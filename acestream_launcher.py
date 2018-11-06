@@ -44,6 +44,11 @@ class AcestreamLauncher(object):
       default=self.get_option('player')
     )
     parser.add_argument(
+      '-t', '--timeout',
+      help='time in seconds to wait for stream playback (default: 30)',
+      default=self.get_option('timeout', 'getint')
+    )
+    parser.add_argument(
       '-v', '--verbose',
       help='show engine and media player output in console',
       action='store_true',
@@ -80,6 +85,7 @@ class AcestreamLauncher(object):
     config = configparser.RawConfigParser({
       'engine': 'acestreamengine --client-console',
       'player': 'mpv',
+      'timeout': '30',
       'verbose': 'False'
     })
 
@@ -151,7 +157,7 @@ class AcestreamLauncher(object):
   def start_stream(self):
     """Strart streaming"""
 
-    self.engine.open_stream(self.args.url, self.atty, 10)
+    self.engine.open_stream(self.args.url, self.atty, self.args.timeout)
 
   def start_player(self):
     """Start media player"""
