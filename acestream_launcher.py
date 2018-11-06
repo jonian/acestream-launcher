@@ -151,14 +151,14 @@ class AcestreamLauncher(object):
   def start_stream(self):
     """Strart streaming"""
 
-    self.engine = AcestreamEngine(output=self.output)
+    self.engine = AcestreamEngine()
 
     self.engine.connect('message', self.notify)
     self.engine.connect('playing', self.start_player)
     self.engine.connect('stats', self.stats)
     self.engine.connect('error', self.quit)
 
-    self.engine.start_engine(self.args.engine.split())
+    self.engine.start_engine(self.args.engine.split(), self.output)
     self.engine.open_stream(self.args.url, self.atty, 10)
 
   def start_player(self):

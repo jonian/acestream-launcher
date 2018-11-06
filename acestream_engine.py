@@ -21,12 +21,11 @@ class AcestreamEngine(object):
 
   _events = []
 
-  def __init__(self, host='127.0.0.1', port='6878', output=subprocess.PIPE):
+  def __init__(self, host='127.0.0.1', port='6878'):
     self.host = host
     self.port = port
     self.live = False
     self.poll = True
-    self.stdo = { 'stdout': output, 'stderr': output }
 
   @property
 
@@ -122,21 +121,26 @@ class AcestreamEngine(object):
     thread = threading.Thread(target=self.poll_stream_stats)
     thread.start()
 
-  def start_engine(self, args=None):
-    """Start AceStream Engine"""
-
-    if self.running:
-      return
+  def run_engine(self, args, options):
+    """Start AceStream Engine process"""
 
     try:
-      engine_args = args if args else ['acestreamengine', '--client-console']
-      self.engine = subprocess.Popen(engine_args, preexec_fn=os.setsid, **self.stdo)
+      self.engine = subprocess.Popen(args, **options)
 
       self.emit('message', 'running')
       self.emit('running')
     except OSError:
       self.emit('message', 'noengine')
       self.emit('error')
+
+  def start_engine(self, args=None, output=subprocess.PIPE):
+    """Start AceStream Engine"""
+
+    if not self.running:
+      args = args if args else ['acestreamengine', '--client-console']
+      opts = { 'preexec_fn': os.setsid, 'stdout': output, 'stderr': output }
+
+      self.run_engine(args, opts)
 
   def stop_engine(self):
     """Stop AceStream Engine"""
