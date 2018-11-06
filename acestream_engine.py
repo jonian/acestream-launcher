@@ -143,7 +143,6 @@ class AcestreamEngine(object):
 
     try:
       self.engine = subprocess.Popen(args, **options)
-
       self.emit('message', 'running')
       self.emit('running')
     except OSError:
@@ -157,7 +156,8 @@ class AcestreamEngine(object):
       args = args if args else ['acestreamengine', '--client-console']
       opts = { 'preexec_fn': os.setsid, 'stdout': output, 'stderr': output }
 
-      self.run_engine(args, opts)
+      thread = threading.Thread(target=self.run_engine, args=[args, opts])
+      thread.start()
 
   def stop_engine(self):
     """Stop AceStream Engine"""
