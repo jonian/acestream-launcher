@@ -209,7 +209,7 @@ class AcestreamEngine(object):
     self.poll = emit_stats
 
     self.emit('message', 'playing')
-    self.emit('playing')
+    self.emit('playing', self.playback_url)
 
   def close_stream(self):
     """Close current stream"""
