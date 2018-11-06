@@ -21,8 +21,9 @@ URL                   The acestream url to play
 ## Optional arguments
 ```text
 -h, --help            Show this help message and exit
--p, --player PLAYER   The media player command to use (default: mpv)
--e, --engine ENGINE   The engine command to use (default: acestreamengine --client-console)
+-p, --player  PLAYER  The media player command to use (default: mpv)
+-e, --engine  ENGINE  The engine command to use (default: acestreamengine --client-console)
+-t, --timeout TIME    Time in seconds to wait for stream playback (default: 30)
 -v, --verbose         Show engine and media player output in console
 ```
 
@@ -33,6 +34,7 @@ Create `~/.config/acestream-launcher/config` file to override the default argume
 [DEFAULT]
 player = vlc
 verbose = true
+timeout = 60
 
 [tty]
 engine = acestreamengine --client-console --log-file /home/jonian/.ACEStream/engine.log
