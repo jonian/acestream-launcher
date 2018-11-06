@@ -48,7 +48,13 @@ verbose = false
 Install required dependencies:
 
 ```shell
-sudo apt-get install python libnotify
+sudo apt-get install python
+```
+
+Install optional dependencies:
+
+```shell
+sudo apt-get install libnotify
 ```
 
 Install Acestream engine manually (you can find actual links [here](http://wiki.acestream.org/wiki/index.php/Download#Linux) and detailed instructions [here](http://wiki.acestream.org/wiki/index.php/Install_Ubuntu)):
