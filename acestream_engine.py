@@ -88,8 +88,7 @@ class AcestreamEngine(object):
     output_err = req_output.get('error', False)
 
     if output_err or not output_res:
-      self.emit('message', 'unavailable')
-      self.emit('error')
+      return
 
     for key in output_res.keys():
       setattr(self, key, output_res[key])
@@ -180,7 +179,13 @@ class AcestreamEngine(object):
       self.emit('error')
 
     self.open_request(url)
-    self.emit('message', 'waiting')
+
+    if hasattr(self, 'playback_url'):
+      self.emit('message', 'waiting')
+    else:
+      self.emit('message', 'unavailable')
+      self.emit('error')
+
     self.poll_stats()
 
     while not self.live:
