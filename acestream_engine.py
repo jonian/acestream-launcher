@@ -80,7 +80,7 @@ class AcestreamEngine(object):
 
     return self.get_url('ace/getstream', format='json', sid=stream_uid, **query_args)
 
-  def open_url(self, url):
+  def open_request(self, url):
     """Open URL request on engine API"""
 
     req_output = self.request(self.get_stream_url(url))
@@ -172,7 +172,7 @@ class AcestreamEngine(object):
       self.emit('message', 'noconnect')
       self.emit('error')
 
-    self.open_url(url)
+    self.open_request(url)
     self.emit('message', 'waiting')
     self.poll_stats()
 
