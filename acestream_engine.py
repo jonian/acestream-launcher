@@ -21,10 +21,9 @@ class AcestreamEngine(object):
 
   _events = []
 
-  def __init__(self, host='127.0.0.1', port='6878', timeout=10, output=subprocess.PIPE):
+  def __init__(self, host='127.0.0.1', port='6878', output=subprocess.PIPE):
     self.host = host
     self.port = port
-    self.wait = timeout
     self.live = False
     self.poll = True
     self.stdo = { 'stdout': output, 'stderr': output }
@@ -39,19 +38,6 @@ class AcestreamEngine(object):
     output_res = req_output.get('result', False)
 
     return output_res is not False
-
-  def check_api(self):
-    """Check if acestream HTTP API is available"""
-
-    self.emit('message', 'connecting')
-
-    while self.wait > 0 and not self.running:
-      time.sleep(1)
-      self.wait = self.wait - 1
-
-    if self.wait == 0:
-      self.emit('message', 'noconnect')
-      self.emit('error')
 
   def connect(self, event_name, callback_fn):
     """Register event and callback function"""
@@ -158,10 +144,18 @@ class AcestreamEngine(object):
     if hasattr(self, 'engine'):
       os.killpg(os.getpgid(self.engine.pid), signal.SIGTERM)
 
-  def open_stream(self, url, emit_stats=False):
+  def open_stream(self, url, emit_stats=False, timeout=10):
     """Open AceStream URL"""
 
-    self.check_api()
+    self.emit('message', 'connecting')
+
+    while timeout > 0 and not self.running:
+      time.sleep(1)
+      timeout = timeout - 1
+
+    if timeout == 0:
+      self.emit('message', 'noconnect')
+      self.emit('error')
 
     req_output = self.request(self.get_stream_url(url))
     output_res = req_output.get('response', False)
