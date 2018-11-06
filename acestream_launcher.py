@@ -151,14 +151,6 @@ class AcestreamLauncher(object):
   def start_stream(self):
     """Strart streaming"""
 
-    self.engine = AcestreamEngine()
-
-    self.engine.connect('message', self.notify)
-    self.engine.connect('playing', self.start_player)
-    self.engine.connect('stats', self.stats)
-    self.engine.connect('error', self.quit)
-
-    self.engine.start_engine(self.args.engine.split(), self.output)
     self.engine.open_stream(self.args.url, self.atty, 10)
 
   def start_player(self):
@@ -170,14 +162,23 @@ class AcestreamLauncher(object):
     try:
       self.player = subprocess.Popen(player_args, preexec_fn=os.setsid, **self.stdo)
       self.player.communicate()
+      self.quit()
     except OSError:
       self.notify('noplayer', True)
 
   def run(self):
     """Start acestream and media player"""
 
-    self.start_stream()
-    self.quit()
+    self.engine = AcestreamEngine()
+
+    self.engine.connect('message', self.notify)
+    self.engine.connect('stats', self.stats)
+    self.engine.connect('error', self.quit)
+
+    self.engine.connect('running', self.start_stream)
+    self.engine.connect('playing', self.start_player)
+
+    self.engine.start_engine(self.args.engine.split(), self.output)
 
   def quit(self, abort=False):
     """Stop acestream and media player"""
