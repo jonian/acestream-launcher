@@ -94,6 +94,13 @@ class AcestreamEngine(object):
     for key in output_res.keys():
       setattr(self, key, output_res[key])
 
+  def close_request(self):
+    """Close request on engine API"""
+
+    if hasattr(self, 'command_url'):
+      stop_url = self.get_url(self.command_url, method='stop')
+      self.request(stop_url)
+
   def update_stream_stats(self):
     """Update stream statistics"""
 
@@ -188,7 +195,4 @@ class AcestreamEngine(object):
     """Close current stream"""
 
     self.poll = False
-
-    if hasattr(self, 'command_url'):
-      stop_url = self.get_url(self.command_url, method='stop')
-      self.request(stop_url)
+    self.close_request()
