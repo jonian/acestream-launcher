@@ -50,7 +50,7 @@ class AcestreamEngine(object):
       if event['event_name'] == event_name:
         event['callback_fn'](*callback_args)
 
-  def timeout(self, timeout, attribute):
+  def timeout(self, timeout, attribute, message):
     """Wait for attribute to become true in given time"""
 
     while timeout > 0 and not getattr(self, attribute):
@@ -58,7 +58,8 @@ class AcestreamEngine(object):
       timeout = timeout - 1
 
     if timeout == 0:
-      return True
+      self.emit('message', message)
+      self.emit('error')
 
   def request(self, url):
     """Send engine API request"""
@@ -186,10 +187,7 @@ class AcestreamEngine(object):
     """Open AceStream URL"""
 
     self.emit('message', 'connecting')
-
-    if self.timeout(timeout, 'running'):
-      self.emit('message', 'noconnect')
-      self.emit('error')
+    self.timeout(timeout, 'running', 'noconnect')
 
     self.open_request(url)
 
@@ -200,10 +198,7 @@ class AcestreamEngine(object):
       self.emit('error')
 
     self.poll_stats()
-
-    if self.timeout(timeout, 'live'):
-      self.emit('message', 'unavailable')
-      self.emit('error')
+    self.timeout(timeout, 'live', 'unavailable')
 
     self.poll = emit_stats
 
