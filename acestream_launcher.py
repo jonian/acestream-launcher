@@ -160,7 +160,7 @@ class AcestreamLauncher(object):
   def start_stream(self):
     """Strart streaming"""
 
-    self.engine.open_stream(self.args.url, self.atty, self.args.timeout)
+    self.engine.open_stream(self.args.url, self.atty, int(self.args.timeout))
 
   def start_player(self, url):
     """Start media player"""
