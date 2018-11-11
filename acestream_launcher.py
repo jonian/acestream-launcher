@@ -212,4 +212,4 @@ if __name__ == '__main__':
     launcher = AcestreamLauncher()
     launcher.run()
   except KeyboardInterrupt:
-    launcher.quit(True)
+    launcher.quit()
