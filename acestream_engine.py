@@ -121,6 +121,8 @@ class AcestreamEngine(object):
     if output_err or not output_res:
       return
 
+    self.available = True
+
     for key in output_res.keys():
       setattr(self, key, output_res[key])
 
@@ -189,18 +191,18 @@ class AcestreamEngine(object):
     self.emit('message', 'connecting')
     self.timeout(timeout, 'running', 'noconnect')
 
+    self.emit('message', 'waiting')
     self.open_request(url)
 
-    if hasattr(self, 'playback_url'):
-      self.emit('message', 'waiting')
-    else:
+    if not hasattr(self, 'playback_url'):
       self.emit('message', 'unavailable')
       self.emit('error')
 
+    self.available = False
     self.poll_stats()
-    self.timeout(timeout, 'live', 'unavailable')
 
     self.poll = emit_stats
+    self.timeout(timeout, 'available', 'unavailable')
 
     self.emit('message', 'playing')
     self.emit('playing', self.playback_url)
