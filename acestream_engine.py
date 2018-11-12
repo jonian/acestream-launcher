@@ -148,6 +148,7 @@ class AcestreamEngine(object):
     """Run stream stats watcher in thread"""
 
     thread = threading.Thread(target=self.poll_stream_stats)
+    thread.setDaemon(True)
     thread.start()
 
   def run_engine(self, args, kwargs):

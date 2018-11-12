@@ -49,6 +49,7 @@ class AcestreamPlayer(object):
     cmargs.append(url)
 
     thread = threading.Thread(target=self.run_player, args=[cmargs, kwargs])
+    thread.setDaemon(True)
     thread.start()
 
   def stop_player(self):
