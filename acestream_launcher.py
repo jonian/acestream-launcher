@@ -20,6 +20,10 @@ from acestream_player import AcestreamPlayer
 class AcestreamLauncher(object):
   """Acestream Launcher"""
 
+  engine  = None
+  player  = None
+  exiting = False
+
   def __init__(self):
     self.atty = sys.stdin.isatty()
     self.opts = self.read_config()
@@ -123,7 +127,7 @@ class AcestreamLauncher(object):
 
     message = messages.get(message, None)
 
-    if not message or hasattr(self, 'exiting'):
+    if not message or self.exiting:
       return
 
     if self.atty:
@@ -139,7 +143,7 @@ class AcestreamLauncher(object):
   def stats(self, engine):
     """Print stream statistics"""
 
-    if hasattr(self, 'exiting'):
+    if self.exiting:
       return
 
     labels = { 'dl': 'playing', 'prebuf': 'buffering' }
@@ -191,20 +195,18 @@ class AcestreamLauncher(object):
   def quit(self):
     """Stop acestream and media player"""
 
-    if hasattr(self, 'exiting'):
-      return
+    if not self.exiting:
+      self.exiting = True
+      print('\n\nExiting...')
 
-    self.exiting = True
-
-    if hasattr(self, 'engine'):
+    if self.engine:
       self.engine.close_stream()
       self.engine.stop_engine()
+      self.engine = None
 
-    if hasattr(self, 'player'):
+    if self.player:
       self.player.stop_player()
-
-    print('\n\nExiting...')
-    sys.exit()
+      self.player = None
 
 
 if __name__ == '__main__':
