@@ -111,13 +111,13 @@ class AcestreamLauncher(object):
     """Show player status notifications"""
 
     messages = {
-      'running': 'Acestream engine running...',
-      'noengine': 'Acestream engine not found in provided path!',
-      'connecting': 'Connecting to Acestream engine...',
-      'noconnect': 'Cannot connect to Acestream engine!',
-      'noplayer': 'Media player not found in provided path!',
-      'waiting': 'Waiting for stream response...',
-      'playing': 'Streaming started, launching player...',
+      'running':     'Acestream engine running...',
+      'noengine':    'Acestream engine not found in provided path!',
+      'connecting':  'Connecting to Acestream engine...',
+      'noconnect':   'Cannot connect to Acestream engine!',
+      'noplayer':    'Media player not found in provided path!',
+      'waiting':     'Waiting for stream response...',
+      'playing':     'Streaming started, launching player...',
       'unavailable': 'Stream unavailable!'
     }
 
