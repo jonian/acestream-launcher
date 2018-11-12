@@ -5,6 +5,7 @@
 
 import os
 import sys
+import time
 import argparse
 import subprocess
 
@@ -191,6 +192,9 @@ class AcestreamLauncher(object):
     self.engine.connect('playing', self.start_player)
 
     self.engine.start_engine(command=self.args.engine, kwargs=self.stdo)
+
+    while self.engine or self.player:
+      time.sleep(1)
 
   def quit(self):
     """Stop acestream and media player"""
