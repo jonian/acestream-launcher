@@ -199,14 +199,14 @@ class AcestreamLauncher(object):
       self.exiting = True
       print('\n\nExiting...')
 
+    if self.player:
+      self.player.stop_player()
+      self.player = None
+
     if self.engine:
       self.engine.close_stream()
       self.engine.stop_engine()
       self.engine = None
-
-    if self.player:
-      self.player.stop_player()
-      self.player = None
 
 
 if __name__ == '__main__':
