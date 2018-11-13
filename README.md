@@ -3,7 +3,7 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
 
 ## Dependencies
 ```text
-python, libnotify, acestream-engine
+python, pyhon-acestream, libnotify, acestream-engine
 ```
 
 Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.acestream.org/wiki/index.php/Engine_HTTP_API) that is available on acestream-engine `v3.1` or later.
@@ -48,7 +48,7 @@ verbose = false
 Install required dependencies (compatible with python 2 and 3):
 
 ```shell
-sudo apt-get install python
+sudo apt-get install python python-pip
 ```
 
 Install optional dependencies (support for desktop notifications):
@@ -81,14 +81,11 @@ sudo snap install acestreamplayer
 ```
 
 ## Installation
+Install the package with the Python Package Index using `pip` command.
 
 ```shell
-git clone "https://github.com/jonian/acestream-launcher.git"
-cd acestream-launcher
-sudo ./install.sh
+pip install acestream-launcher
 ```
-
-The script will install acestream-launcher in `/opt` directory.
 
 ## Packages
 Arch Linux: [AUR Package](https://aur.archlinux.org/packages/acestream-launcher)  

@@ -1,0 +1,1 @@
+name = 'acestream_launcher'

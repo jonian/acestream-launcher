@@ -1,4 +1,6 @@
-*test*
-*sample*
+build
+dist
+
+*.egg-info
 *pycache*
 *.pyc*
