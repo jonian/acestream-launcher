@@ -1,10 +1,10 @@
 [Desktop Entry]
 Version=1.0
-Name=Acestream Launcher
+Name=AceStream Launcher
 GenericName=Media player
-Comment=Open Acestream links with MPV Media Player
-Exec=/usr/bin/acestream-launcher %u
-TryExec=/usr/bin/acestream-launcher
+Comment=Open AceStream links with any Media Player
+Exec=acestream-launcher %u
+TryExec=acestream-launcher
 Icon=multimedia-video-player
 Terminal=false
 Type=Application
