@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
   name='acestream-launcher',
-  version='2.0.0',
+  version='2.0.1',
   author='Jonian Guveli',
   author_email='jonian@hardpixel.eu',
   description='Open AceStream links with a Media Player of your choice',
