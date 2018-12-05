@@ -53,7 +53,6 @@ class StreamLauncher(object):
     self.noty = NotifyHandler(self.args.player)
 
   @property
-
   def output(self):
     output = None if self.args.verbose else subprocess.PIPE
     return { 'stdout': output, 'stderr': output }
