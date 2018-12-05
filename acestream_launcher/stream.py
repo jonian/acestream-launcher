@@ -8,17 +8,16 @@ from acestream.stream import Stream
 
 class StreamHandler(Observable):
 
-  engine    = None
-  stream    = None
-  params    = None
-  timeout   = 30
-  playing   = False
-  available = False
-
   def __init__(self, bin, host='127.0.0.1', port=6878, timeout=30):
-    self.timeout = int(timeout)
-    self.server  = Server(host=host, port=port)
-    self.engine  = Engine(bin=bin)
+    Observable.__init__(self)
+
+    self.stream    = None
+    self.params    = None
+    self.playing   = False
+    self.available = False
+    self.timeout   = int(timeout)
+    self.server    = Server(host=host, port=port)
+    self.engine    = Engine(bin=bin)
 
   def start(self, param, **kwargs):
     self.params = self._parse_stream_param(param)

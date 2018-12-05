@@ -8,10 +8,11 @@ from acestream.object import Observable
 
 class PlayerHandler(Observable):
 
-  process = None
-
   def __init__(self, bin='mpv'):
-    self.args = bin.split()
+    Observable.__init__(self)
+
+    self.args    = bin.split()
+    self.process = None
 
   def start(self, url, **kwargs):
     cmargs = self.args
