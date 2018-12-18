@@ -1,3 +1,4 @@
+import os
 import time
 
 from acestream.object import Observable
