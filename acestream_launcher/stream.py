@@ -48,7 +48,9 @@ class StreamHandler(Observable):
     self.stream.start()
 
   def _parse_stream_param(self, param):
-    if param.startswith('http'):
+    links = ['http://', 'https://', 'file://']
+
+    if any([param.startswith(l) for l in links]):
       return { 'url': param }
     else:
       return { 'id': param.split('://')[-1] }
