@@ -48,7 +48,11 @@ class StreamHandler(Observable):
     self.stream.start()
 
   def _parse_stream_param(self, param):
+    files = ['.acelive', '.torrent']
     links = ['http://', 'https://', 'file://']
+
+    if any([param.endswith(f) for f in files]) and not param.startswith('file://'):
+      param = "file://%s" % os.path.realpath(param)
 
     if any([param.startswith(l) for l in links]):
       return { 'url': param }
