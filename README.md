@@ -6,7 +6,7 @@ Acestream Launcher allows you to open Acestream links with a Media Player of you
 python, pyhon-acestream, libnotify, acestream-engine
 ```
 
-Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](http://wiki.acestream.org/wiki/index.php/Engine_HTTP_API) that is available on acestream-engine `v3.1` or later.
+Since `v1.0.0` acestream-launcher uses [Acestream Engine HTTP API](https://wiki.acestream.media/Engine_HTTP_API) that is available on acestream-engine `v3.1` or later.
 
 ## Usage
 ```shell
@@ -57,18 +57,14 @@ Install optional dependencies (support for desktop notifications):
 sudo apt-get install libnotify
 ```
 
-Install Acestream engine manually (you can find actual links [here](http://wiki.acestream.org/wiki/index.php/Download#Linux) and detailed instructions [here](http://wiki.acestream.org/wiki/index.php/Install_Ubuntu)):
+Install Acestream engine manually (you can find actual links [here](https://wiki.acestream.media/Download#Linux) and detailed instructions [here](https://wiki.acestream.media/Install_Ubuntu)):
 
 ```shell
 sudo apt-get install python-setuptools python-m2crypto python-apsw
 
-wget "http://dl.acestream.org/linux/acestream_3.1.16_ubuntu_16.04_x86_64.tar.gz"
-tar zxvf acestream_3.1.16_ubuntu_16.04_x86_64.tar.gz
-sudo mv acestream_3.1.16_ubuntu_16.04_x86_64 /opt/acestream
-
-wget "http://archive.ubuntu.com/ubuntu/pool/universe/m/m2crypto/m2crypto_0.24.0.orig.tar.xz"
-tar xf m2crypto_0.24.0.orig.tar.xz
-sudo mv M2Crypto-0.24.0/M2Crypto /opt/acestream/lib/M2Crypto
+wget "http://download.acestream.media/linux/acestream_3.1.49_ubuntu_18.04_x86_64.tar.gz"
+tar zxvf acestream_3.1.49_ubuntu_18.04_x86_64.tar.gz
+sudo mv acestream_3.1.49_ubuntu_18.04_x86_64 /opt/acestream
 
 sudo sed -i "/ROOT=/c\ROOT=\/opt\/acestream" /opt/acestream/start-engine
 sudo ln -sf /opt/acestream/start-engine /usr/bin/acestreamengine
