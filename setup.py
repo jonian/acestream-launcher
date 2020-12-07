@@ -17,7 +17,7 @@ setuptools.setup(
     ('share/applications', ['acestream-launcher.desktop'])
   ],
   install_requires=[
-    'acestream>=0.1.3'
+    'acestream>=0.1.7'
   ],
   classifiers=[
     'Programming Language :: Python :: 2',
