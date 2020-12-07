@@ -1,4 +1,5 @@
 import os
+import re
 import time
 
 from acestream.object import Observable
@@ -49,17 +50,23 @@ class StreamHandler(Observable):
     self.stream.start()
 
   def _parse_stream_param(self, param):
-    files = ['.acelive', '.torrent']
-    links = ['http://', 'https://', 'file://']
+    param = param.strip()
+    files = re.search(r'\.(acelive|torrent)$', param)
 
-    if any([param.endswith(f) for f in files]):
-      if not param.startswith('file://'):
-        param = "file://%s" % os.path.realpath(param)
+    if files and not param.startswith('file://'):
+      param = "file://%s" % os.path.realpath(param)
 
-    if any([param.startswith(l) for l in links]):
+    if re.search(r'^(http|https|file)://', param):
       return { 'url': param }
-    else:
-      return { 'id': param.split('://')[-1] }
+
+    param = param.lower()
+    match = re.search(r'[0-9a-f]{40}|[a-z2-7]{32}', param)
+
+    if match and param.startswith('acestream://'):
+      return { 'id': match[0] }
+
+    if match:
+      return { 'infohash': match[0] }
 
   def _timeout(self, object, attribute, message):
     while self.timeout > 0 and not getattr(object, attribute):
