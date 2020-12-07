@@ -49,6 +49,8 @@ class StreamLauncher(object):
       default=config.getboolean('verbose')
     )
 
+    self.host = config.get('host')
+    self.port = config.getint('port')
     self.args = parser.parse_args()
     self.noty = NotifyHandler(self.args.player)
 
@@ -76,7 +78,12 @@ class StreamLauncher(object):
     self.player.start(url=url, **self.output)
 
   def run(self):
-    self.stream = StreamHandler(bin=self.args.engine, timeout=self.args.timeout)
+    self.stream = StreamHandler(
+      bin=self.args.engine,
+      host=self.host,
+      port=self.port,
+      timeout=self.args.timeout
+    )
 
     self.stream.connect('notify', self.notify)
     self.stream.connect('stats::updated', self.stats)
