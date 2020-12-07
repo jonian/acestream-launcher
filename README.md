@@ -35,6 +35,8 @@ Create `~/.config/acestream-launcher/config` file to override the default argume
 player = vlc
 verbose = true
 timeout = 60
+host = 127.0.0.1
+port = 6878
 
 [tty]
 engine = acestreamengine --client-console --log-file /home/jonian/.ACEStream/engine.log
