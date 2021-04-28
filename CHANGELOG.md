@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.1.0](https://github.com/jonian/acestream-launcher/tree/v2.1.0) (2021-04-28)
+
+[Full Changelog](https://github.com/jonian/acestream-launcher/compare/v2.0.3...v2.1.0)
+
+**Closed issues:**
+
+- Execution results in error: AttributeError: 'LooseVersion' object has no attribute 'version' [\#43](https://github.com/jonian/acestream-launcher/issues/43)
+- acestream-launcher: command not found [\#40](https://github.com/jonian/acestream-launcher/issues/40)
+
 ## [v2.0.3](https://github.com/jonian/acestream-launcher/tree/v2.0.3) (2020-12-07)
 
 [Full Changelog](https://github.com/jonian/acestream-launcher/compare/v2.0.2...v2.0.3)
