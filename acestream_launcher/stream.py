@@ -87,9 +87,8 @@ class StreamHandler(Observable):
   def _on_engine_terminated(self):
     self.emit('terminated')
 
-  def _on_engine_error(self, message=None):
-    notice = message or 'Unknown acestream engine error'
-    self.emit('notify', "Acestream engine failed to start!\n\n==> %s" % notice)
+  def _on_engine_error(self, message=''):
+    self.emit('notify', "Acestream engine failed to start! %s" % message)
     self.emit('error')
 
   def _on_stream_status_changed(self):
