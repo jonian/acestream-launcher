@@ -87,8 +87,9 @@ class StreamHandler(Observable):
   def _on_engine_terminated(self):
     self.emit('terminated')
 
-  def _on_engine_error(self, _message=None):
-    self.emit('notify', 'Acestream engine not found in provided path!')
+  def _on_engine_error(self, message=None):
+    notice = message or 'Unknown acestream engine error'
+    self.emit('notify', "Acestream engine failed to start!\n\n==> %s" % notice)
     self.emit('error')
 
   def _on_stream_status_changed(self):
