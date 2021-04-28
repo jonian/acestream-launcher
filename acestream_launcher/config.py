@@ -17,6 +17,7 @@ class ConfigHandler(object):
       'port':    '6878',
       'player':  'mpv',
       'timeout': '30',
+      'hls': 'False',
       'verbose': 'False'
     })
 

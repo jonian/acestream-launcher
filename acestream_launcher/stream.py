@@ -10,7 +10,7 @@ from acestream.stream import Stream
 
 class StreamHandler(Observable):
 
-  def __init__(self, bin, host='127.0.0.1', port=6878, timeout=30):
+  def __init__(self, bin, host='127.0.0.1', port=6878, timeout=30, hls=False):
     Observable.__init__(self)
 
     self.stream    = None
@@ -18,6 +18,7 @@ class StreamHandler(Observable):
     self.playing   = False
     self.available = False
     self.timeout   = int(timeout)
+    self.hls       = bool(hls)
     self.server    = Server(host=host, port=port)
     self.engine    = Engine(bin=bin)
 
@@ -47,7 +48,7 @@ class StreamHandler(Observable):
     self.stream.connect('stats::updated', self._on_stream_stats_updated)
     self.stream.connect('error', self._on_stream_error)
 
-    self.stream.start()
+    self.stream.start(hls=self.hls)
 
   def _parse_stream_param(self, param):
     param = param.strip()

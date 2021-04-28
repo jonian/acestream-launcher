@@ -43,6 +43,12 @@ class StreamLauncher(object):
       default=config.getint('timeout')
     )
     parser.add_argument(
+      '-l', '--hls',
+      help='get HLS stream instead of HTTP stream',
+      action='store_true',
+      default=config.getboolean('hls')
+    )
+    parser.add_argument(
       '-v', '--verbose',
       help='show engine and media player output in console',
       action='store_true',
@@ -82,7 +88,8 @@ class StreamLauncher(object):
       bin=self.args.engine,
       host=self.host,
       port=self.port,
-      timeout=self.args.timeout
+      timeout=self.args.timeout,
+      hls=self.args.hls
     )
 
     self.stream.connect('notify', self.notify)

@@ -24,6 +24,7 @@ URL                    The acestream url to play
 -p, --player  PLAYER   The media player command to use (default: mpv)
 -e, --engine  ENGINE   The engine command to use (default: acestreamengine --client-console)
 -t, --timeout TIMEOUT  Time in seconds to wait for stream playback (default: 30)
+-l, --hls              Get HLS stream instead of HTTP stream
 -v, --verbose          Show engine and media player output in console
 ```
 
