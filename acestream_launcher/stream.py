@@ -1,11 +1,32 @@
 import os
 import re
 import time
+import tempfile
 
 from acestream.object import Observable
 from acestream.server import Server
 from acestream.engine import Engine
 from acestream.stream import Stream
+
+
+class Playlist(object):
+
+  def __init__(self):
+    self.path = None
+
+  def create(self, stream):
+    desc, tmpfile = tempfile.mkstemp(suffix='.m3u', prefix='acestream-launcher-')
+    file = os.fdopen(desc, 'w')
+
+    file.write('#EXTINF:0,%s\n%s' % (stream.info.name, stream.playback_url))
+    file.close()
+
+    self.path = tmpfile
+    return tmpfile
+
+  def remove(self):
+    if os.path.isfile(self.path):
+      os.remove(self.path)
 
 
 class StreamHandler(Observable):
@@ -17,6 +38,7 @@ class StreamHandler(Observable):
     self.params    = None
     self.playing   = False
     self.available = False
+    self.playlist  = Playlist()
     self.timeout   = int(timeout)
     self.hls       = bool(hls)
     self.server    = Server(host=host, port=port)
@@ -29,6 +51,7 @@ class StreamHandler(Observable):
     self._start_engine(**kwargs)
 
   def stop(self):
+    self.playlist.remove()
     self.engine.stop()
 
   def _start_engine(self, **kwargs):
@@ -100,7 +123,7 @@ class StreamHandler(Observable):
       self.playing = True
 
       self.emit('notify', 'Streaming started, launching player...')
-      self.emit('playing', self.stream.playback_url)
+      self.emit('playing', self.playlist.create(self.stream))
 
   def _on_stream_stats_updated(self):
     self.emit('stats::updated', self.stream, self.stream.stats)
