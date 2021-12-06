@@ -30,8 +30,16 @@ class PlayerHandler(Observable):
       self.emit('terminated')
 
   def _start_process(self, *args, **kwargs):
+    env = os.environ.copy()
+    ld_paths = env.get("LD_LIBRARY_PATH", "").split(":")
+    if len(ld_paths) > 0:
+      for path in list(ld_paths):
+        if os.path.isfile(os.path.join(path, "chrome")) and os.path.isfile(os.path.join(path, "libvulkan.so.1")):
+          ld_paths.remove(path)
+      env["LD_LIBRARY_PATH"] = ":".join(ld_paths)
+
     try:
-      self.process = subprocess.Popen(args, preexec_fn=os.setsid, **kwargs)
+      self.process = subprocess.Popen(args, env=env, preexec_fn=os.setsid, **kwargs)
       self.emit('started')
       self.process.communicate()
 
